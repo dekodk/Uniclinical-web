@@ -1,0 +1,54 @@
+.login-container {
+  min-height: 100vh;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo {
+  width: 550px;
+  margin-bottom: 30px;
+}
+
+.login-box {
+  width: 420px;
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.login-title {
+  text-align: center;
+  font-size: 48px;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.input-login {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 30px;
+  font-size: 18px;
+  box-sizing: border-box;
+}
+
+.botao-login {
+  width: 100%;
+  padding: 15px;
+  background-color: #c97b1d;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.botao-login:hover {
+  background-color: #a86412;
+}

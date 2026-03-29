@@ -1,0 +1,115 @@
+.sidebar {
+  width: 260px;
+  min-height: 100vh;
+  background-color: #ffffff;
+  border-right: 1px solid #e5e5e5;
+  padding: 20px 14px;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s ease;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.04);
+}
+
+.sidebar.recolhida {
+  width: 90px;
+}
+
+.sidebar-topo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.botao-recolher {
+  width: 100%;
+  background-color: transparent;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  color: #555;
+}
+
+.botao-recolher:hover {
+  color: #c97b1d;
+}
+
+.logo-sidebar {
+  width: 150px;
+  height: auto;
+  object-fit: contain;
+}
+
+.menu-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.menu-item {
+  width: 100%;
+  border: none;
+  background-color: transparent;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  cursor: pointer;
+  font-size: 17px;
+  text-align: left;
+  transition: all 0.3s ease;
+}
+
+.menu-item:hover {
+  background-color: #f8efe4;
+  color: #c97b1d;
+}
+
+.menu-item.ativo {
+  background-color: #c97b1d;
+  color: white;
+  font-weight: bold;
+}
+
+.menu-icone {
+  font-size: 20px;
+  min-width: 24px;
+  text-align: center;
+}
+
+.menu-texto {
+  white-space: nowrap;
+}
+
+.submenu {
+  margin-top: 6px;
+  margin-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.submenu-item {
+  border: none;
+  background-color: transparent;
+  color: #555;
+  text-align: left;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+.submenu-item:hover {
+  background-color: #f8efe4;
+  color: #c97b1d;
+}
+
+.seta-submenu {
+  margin-left: auto;
+  font-size: 12px;
+}

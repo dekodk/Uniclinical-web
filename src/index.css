@@ -1,0 +1,19 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.menu-principal-layout {
+  display: flex;
+  min-height: 100vh;
+}
