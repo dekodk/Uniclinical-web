@@ -62,18 +62,12 @@ export default function Sidebar({ setTelaAtiva }) {
 
         {!recolhido && cadastroAberto && (
           <div className="submenu">
-            <button
-              className="submenu-item"
-              onClick={() => setTelaAtiva("procedimentos")}
-            >
-              Procedimentos
-            </button>
 
             <button
               className="submenu-item"
-              onClick={() => setTelaAtiva("insumos")}
+              onClick={() => setTelaAtiva("clientes")}
             >
-              Insumos
+              Clientes
             </button>
 
             <button
@@ -85,11 +79,17 @@ export default function Sidebar({ setTelaAtiva }) {
 
             <button
               className="submenu-item"
-              onClick={() => setTelaAtiva("clientes")}
+              onClick={() => setTelaAtiva("insumos")}
             >
-              Clientes
+              Insumos
             </button>
 
+            <button
+              className="submenu-item"
+              onClick={() => setTelaAtiva("procedimentos")}
+            >
+              Procedimentos
+            </button>
           </div>
         )}
 

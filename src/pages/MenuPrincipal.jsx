@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Sidebar from "../components/Sidebar";
-import Procedimentos from "./Procedimentos";
-import Insumos from "./Insumos";
-import Colaboradores from"./Coladoradores";
 import Clientes from "./Clientes";
+import Colaboradores from"./Coladoradores";
+import Insumos from "./Insumos";
+import Procedimentos from "./Procedimentos";
 
 export default function MenuPrincipal() {
   const [telaAtiva, setTelaAtiva] = useState("home");
@@ -15,7 +15,7 @@ export default function MenuPrincipal() {
     }
     
     if (telaAtiva === "colaboradores") {
-      return <Procedimentos />;
+      return <Colaboradores />;
     }
 
     if (telaAtiva === "insumos") {
@@ -23,7 +23,7 @@ export default function MenuPrincipal() {
     }
 
     if (telaAtiva === "procedimentos") {
-      return <Colaboradores />;
+      return <Procedimentos />;
     }
 
     return <h1>Bem-vindo ao sistema da clínica</h1>;

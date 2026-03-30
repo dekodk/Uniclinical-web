@@ -1,11 +1,30 @@
 import "./cadastros.css";
 import { FaPlus, FaSave, FaBan } from "react-icons/fa";
+import { useState } from "react";
 
 export default function Clientes() {
+
+  const [cpf, setCpf] = useState("");
+
+  function formatarCPF(valor) {
+    // remove tudo que não é número
+    let v = valor.replace(/\D/g, "");
+
+    // limita a 11 dígitos
+    v = v.slice(0, 11);
+
+    // aplica a máscara
+    v = v.replace(/(\d{3})(\d)/, "$1.$2");
+    v = v.replace(/(\d{3})(\d)/, "$1.$2");
+    v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+
+    return v;
+  }
+
   return (
     <div className="cadastros-page">
       <div className="cadastros-topo">
-        <h1>Cadastro de clientes</h1>
+        <h1>Cadastro de Clientes</h1>
       </div>
 
       <div className="cadastros-conteudo">
@@ -38,9 +57,14 @@ export default function Clientes() {
           </div>
 
           <div className="form-linha">
+
             <div className="form-grupo" style={{ width: "220px" }}>
               <label>CPF</label>
-              <input type="text" />
+              <input
+                type="text"
+                value={cpf}
+                onChange={(e) => setCpf(formatarCPF(e.target.value))}
+              />
             </div>
 
             <div className="form-grupo" style={{ width: "220px" }}>
@@ -48,11 +72,42 @@ export default function Clientes() {
               <input type="date" />
             </div>
 
-            <div className="form-grupo" style={{ width: "220px" }}>
+            <div className="form-grupo" style={{ width: "120px" }}>
               <label>Sexo</label>
+              <select>
+                <option value="">Selecione</option>
+                <option value="M">Masculino</option>
+                <option value="F">Feminino</option>
+                <option value="O">Outro(a)</option>
+              </select>
+            </div>
+
+          </div>
+
+          <div className="form-linha">
+            <div className="form-grupo" style={{ width: "180px" }}>
+              <label>RG</label>
               <input type="text" />
             </div>
           </div>
+
+          <div className="barra-acoes">
+            <button className="botao-acao" title="Novo">
+              <FaPlus />
+            </button>
+
+            <button className="botao-acao" title="Salvar">
+              <FaSave />
+            </button>
+
+            <button
+              className="botao-acao botao-inativar"
+              title="Inativar"
+            >
+              <FaBan />
+            </button>
+          </div>
+
         </div>
       </div>
     </div>

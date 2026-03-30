@@ -17,7 +17,7 @@ export default function Procedimentos() {
   return (
     <div className="cadastros-page">
       <div className="cadastros-topo">
-        <h1>Cadastro de procedimentos</h1>
+        <h1>Cadastro de Procedimentos</h1>
       </div>
 
       <div className="cadastros-conteudo">
