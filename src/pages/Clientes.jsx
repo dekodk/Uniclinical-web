@@ -5,6 +5,15 @@ import { useState } from "react";
 export default function Clientes() {
   const [cpf, setCpf] = useState("");
   const [abaAtiva, setAbaAtiva] = useState("dados");
+  const [anamnese, setAnamnese] = useState({
+  cirurgia: "N",
+  remedio: "N",
+  anticoncepcional: "N",
+  alergiaMedicamento: "N",
+  tratamento: "N",
+  pressao: "N",
+  outro: "N",
+});
 
   const [endereco, setEndereco] = useState({
     codigo: "",
@@ -75,6 +84,13 @@ export default function Clientes() {
     }
   }
 
+  function alterarAnamnese(campo, valor) {
+  setAnamnese((prev) => ({
+    ...prev,
+    [campo]: valor,
+  }));
+}
+
   return (
     <div className="cadastros-page">
       <div className="cadastros-topo">
@@ -113,7 +129,7 @@ export default function Clientes() {
               style={abaAtiva === "ficha" ? estiloAbaAtiva : estiloAba}
               onClick={() => setAbaAtiva("ficha")}
             >
-              Ficha anamnéstica
+              Ficha Médica
             </button>
           </div>
 
@@ -290,8 +306,8 @@ export default function Clientes() {
           )}
 
           {abaAtiva === "contatos" && (
-          <>
-            <div className="form-linha">
+            <>
+              <div className="form-linha">
                 <div className="form-grupo" style={{ width: "220px" }}>
                   <label>Telefone</label>
                   <input type="text" />
@@ -302,49 +318,226 @@ export default function Clientes() {
                   <input type="email" />
                 </div>
               </div>
-          </>)}
+            </>)}
           {abaAtiva === "ficha" && (<>
-            <div className="form-linha">
-                <div className="form-grupo" style={{ width: "100%" }}>
-                  <label>Observações da ficha anamnéstica</label>
-                  <textarea rows="6"></textarea>
-                </div>
+            <div className="form-grupo form-grupo-select-curto">
+              <label className="label-largo">Já fez alguma cirurgia?</label>
+
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+
+                <select
+                  value={anamnese.cirurgia}
+                  onChange={(e) => alterarAnamnese("cirurgia", e.target.value)}
+                >
+                  <option value="N">Não</option>
+                  <option value="S">Sim</option>
+                </select>
+
+                {anamnese.cirurgia === "S" && (
+                  <>
+                    <label>Qual?</label>
+                    <input
+                      type="text"
+                      style={{ width: "250px" }}
+                      placeholder="Descreva..."
+                    />
+                  </>
+                )}
+
+               </div>
               </div>
-          </>)}
 
-          <div className="barra-acoes">
-            <button className="botao-acao" title="Novo">
-              <FaPlus />
-            </button>
+              <div className="form-grupo form-grupo-select-curto">
+                <label className="label-largo">Toma algum remédio?</label>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
 
-            <button className="botao-acao" title="Salvar">
-              <FaSave />
-            </button>
+                <select
+                  value={anamnese.remedio}
+                  onChange={(e) => alterarAnamnese("remedio", e.target.value)}
+                >
+                  <option value="N">Não</option>
+                  <option value="S">Sim</option>
+                </select>
 
-            <button className="botao-acao botao-inativar" title="Inativar">
-              <FaBan />
-            </button>
+                {anamnese.remedio === "S" && (
+                  <>
+                    <label>Qual?</label>
+                    <input
+                      type="text"
+                      style={{ width: "250px" }}
+                      placeholder="Descreva..."
+                    />
+                  </>
+                )}
+
+               </div>
+              </div>
+
+              <div className="form-grupo form-grupo-select-curto">
+                <label className="label-largo">Toma anticoncepcional?</label>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+
+                <select
+                  value={anamnese.anticoncepcional}
+                  onChange={(e) => alterarAnamnese("anticoncepcional", e.target.value)}
+                >
+                  <option value="N">Não</option>
+                  <option value="S">Sim</option>
+                </select>
+
+                {anamnese.anticoncepcional === "S" && (
+                  <>
+                    <label>Qual?</label>
+                    <input
+                      type="text"
+                      style={{ width: "250px" }}
+                      placeholder="Descreva..."
+                    />
+                  </>
+                )}
+
+               </div>
+              </div>
+
+              <div className="form-grupo form-grupo-select-curto">
+                <label className="label-largo">Alergia a algum medicamento?</label>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+
+                <select
+                  value={anamnese.alergiaMedicamento}
+                  onChange={(e) => alterarAnamnese("alergiaMedicamento", e.target.value)}
+                >
+                  <option value="N">Não</option>
+                  <option value="S">Sim</option>
+                </select>
+
+                {anamnese.alergiaMedicamento === "S" && (
+                  <>
+                    <label>Qual?</label>
+                    <input
+                      type="text"
+                      style={{ width: "250px" }}
+                      placeholder="Descreva..."
+                    />
+                  </>
+                )}
+
+               </div>
+              </div>
+
+              <div className="form-grupo form-grupo-select-curto">
+                <label className="label-largo">Faz algum tratamento?</label>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+
+                <select
+                  value={anamnese.tratamento}
+                  onChange={(e) => alterarAnamnese("tratamento", e.target.value)}
+                >
+                  <option value="N">Não</option>
+                  <option value="S">Sim</option>
+                </select>
+
+                {anamnese.tratamento === "S" && (
+                  <>
+                    <label>Qual?</label>
+                    <input
+                      type="text"
+                      style={{ width: "250px" }}
+                      placeholder="Descreva..."
+                    />
+                  </>
+                )}
+
+               </div>
+              </div>
+
+              <div className="form-grupo form-grupo-select-curto">
+                <label className="label-largo">Sabe a sua pressão?</label>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+
+                <select
+                  value={anamnese.pressao}
+                  onChange={(e) => alterarAnamnese("pressao", e.target.value)}
+                >
+                  <option value="N">Não</option>
+                  <option value="S">Sim</option>
+                </select>
+
+                {anamnese.pressao === "S" && (
+                  <>
+                    <label>Qual?</label>
+                    <input
+                      type="text"
+                      style={{ width: "250px" }}
+                      placeholder="Descreva..."
+                    />
+                  </>
+                )}
+
+               </div>
+              </div>
+
+              <div className="form-grupo form-grupo-select-curto">
+                <label className="label-largo">Gostaria de relatar outro problema?</label>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+
+                <select
+                  value={anamnese.outro}
+                  onChange={(e) => alterarAnamnese("outro", e.target.value)}
+                >
+                  <option value="N">Não</option>
+                  <option value="S">Sim</option>
+                </select>
+
+                {anamnese.outro === "S" && (
+                  <>
+                    <label>Qual?</label>
+                    <input
+                      type="text"
+                      style={{ width: "250px" }}
+                      placeholder="Descreva..."
+                    />
+                  </>
+                )}
+
+               </div>
+              </div>
+
+            </>)}
+
+            <div className="barra-acoes">
+              <button className="botao-acao" title="Novo">
+                <FaPlus />
+              </button>
+
+              <button className="botao-acao" title="Salvar">
+                <FaSave />
+              </button>
+
+              <button className="botao-acao botao-inativar" title="Inativar">
+                <FaBan />
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
+      );
 }
 
-const estiloAba = {
-  padding: "10px 18px",
-  border: "1px solid #d6d6d6",
-  borderRadius: "10px",
-  backgroundColor: "#fff",
-  cursor: "pointer",
-  marginRight: "10px",
-  fontSize: "15px",
-  fontWeight: "600",
+      const estiloAba = {
+        padding: "10px 18px",
+      border: "1px solid #d6d6d6",
+      borderRadius: "10px",
+      backgroundColor: "#fff",
+      cursor: "pointer",
+      marginRight: "10px",
+      fontSize: "15px",
+      fontWeight: "600",
 };
 
-const estiloAbaAtiva = {
-  ...estiloAba,
-  backgroundColor: "#c97b1d",
-  color: "#fff",
-  border: "1px solid #c97b1d",
+      const estiloAbaAtiva = {
+        ...estiloAba,
+        backgroundColor: "#c97b1d",
+      color: "#fff",
+      border: "1px solid #c97b1d",
 };

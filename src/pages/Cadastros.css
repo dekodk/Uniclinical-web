@@ -38,6 +38,7 @@
 .form-grupo {
   display: flex;
   flex-direction: column;
+  margin-bottom: 15px;
 }
 
 .form-grupo.codigo {
@@ -152,4 +153,18 @@
 
 .botao-inativar:hover {
   background-color: #4b5563;
+}
+
+.label-largo {
+  width: 250px;
+  display: inline-block;
+}
+
+.select-pequeno {
+  width: 100px;
+}
+
+.form-grupo-select-curto select {
+  width: 70px !important;
+  flex: unset !important;
 }
