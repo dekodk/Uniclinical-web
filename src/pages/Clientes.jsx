@@ -1,19 +1,19 @@
 import "./cadastros.css";
-import { FaPlus, FaSave, FaBan } from "react-icons/fa";
+import { FaPlus, FaSave, FaBan, FaPrint } from "react-icons/fa";
 import { useState } from "react";
 
 export default function Clientes() {
   const [cpf, setCpf] = useState("");
   const [abaAtiva, setAbaAtiva] = useState("dados");
   const [anamnese, setAnamnese] = useState({
-  cirurgia: "N",
-  remedio: "N",
-  anticoncepcional: "N",
-  alergiaMedicamento: "N",
-  tratamento: "N",
-  pressao: "N",
-  outro: "N",
-});
+    cirurgia: "N",
+    remedio: "N",
+    anticoncepcional: "N",
+    alergiaMedicamento: "N",
+    tratamento: "N",
+    pressao: "N",
+    outro: "N",
+  });
 
   const [endereco, setEndereco] = useState({
     codigo: "",
@@ -85,11 +85,11 @@ export default function Clientes() {
   }
 
   function alterarAnamnese(campo, valor) {
-  setAnamnese((prev) => ({
-    ...prev,
-    [campo]: valor,
-  }));
-}
+    setAnamnese((prev) => ({
+      ...prev,
+      [campo]: valor,
+    }));
+  }
 
   return (
     <div className="cadastros-page">
@@ -320,224 +320,337 @@ export default function Clientes() {
               </div>
             </>)}
           {abaAtiva === "ficha" && (<>
-            <div className="form-grupo form-grupo-select-curto">
-              <label className="label-largo">Já fez alguma cirurgia?</label>
+            <div style={{ display: "flex", alignItems: "flex-start", gap: "60px" }}>
+              <div>
+                {/* COLUNA ESQUERDA */}
+                <div className="form-grupo form-grupo-select-curto">
+                  <label className="label-largo">Já fez alguma cirurgia?</label>
 
-              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
 
-                <select
-                  value={anamnese.cirurgia}
-                  onChange={(e) => alterarAnamnese("cirurgia", e.target.value)}
-                >
-                  <option value="N">Não</option>
-                  <option value="S">Sim</option>
-                </select>
+                    <select
+                      value={anamnese.cirurgia}
+                      onChange={(e) => alterarAnamnese("cirurgia", e.target.value)}
+                    >
+                      <option value="N">Não</option>
+                      <option value="S">Sim</option>
+                    </select>
 
-                {anamnese.cirurgia === "S" && (
-                  <>
-                    <label>Qual?</label>
-                    <input
-                      type="text"
-                      style={{ width: "250px" }}
-                      placeholder="Descreva..."
-                    />
-                  </>
-                )}
+                    {anamnese.cirurgia === "S" && (
+                      <>
+                        <label>Qual?</label>
+                        <input
+                          type="text"
+                          style={{ width: "250px" }}
+                          placeholder="Descreva..."
+                        />
+                      </>
+                    )}
 
-               </div>
+                  </div>
+                </div>
+
+                <div className="form-grupo form-grupo-select-curto">
+                  <label className="label-largo">Toma algum remédio?</label>
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+
+                    <select
+                      value={anamnese.remedio}
+                      onChange={(e) => alterarAnamnese("remedio", e.target.value)}
+                    >
+                      <option value="N">Não</option>
+                      <option value="S">Sim</option>
+                    </select>
+
+                    {anamnese.remedio === "S" && (
+                      <>
+                        <label>Qual?</label>
+                        <input
+                          type="text"
+                          style={{ width: "250px" }}
+                          placeholder="Descreva..."
+                        />
+                      </>
+                    )}
+
+                  </div>
+                </div>
+
+                <div className="form-grupo form-grupo-select-curto">
+                  <label className="label-largo">Toma anticoncepcional?</label>
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+
+                    <select
+                      value={anamnese.anticoncepcional}
+                      onChange={(e) => alterarAnamnese("anticoncepcional", e.target.value)}
+                    >
+                      <option value="N">Não</option>
+                      <option value="S">Sim</option>
+                    </select>
+
+                    {anamnese.anticoncepcional === "S" && (
+                      <>
+                        <label>Qual?</label>
+                        <input
+                          type="text"
+                          style={{ width: "250px" }}
+                          placeholder="Descreva..."
+                        />
+                      </>
+                    )}
+
+                  </div>
+                </div>
+
+                <div className="form-grupo form-grupo-select-curto">
+                  <label className="label-largo">Alergia a algum medicamento?</label>
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+
+                    <select
+                      value={anamnese.alergiaMedicamento}
+                      onChange={(e) => alterarAnamnese("alergiaMedicamento", e.target.value)}
+                    >
+                      <option value="N">Não</option>
+                      <option value="S">Sim</option>
+                    </select>
+
+                    {anamnese.alergiaMedicamento === "S" && (
+                      <>
+                        <label>Qual?</label>
+                        <input
+                          type="text"
+                          style={{ width: "250px" }}
+                          placeholder="Descreva..."
+                        />
+                      </>
+                    )}
+
+                  </div>
+                </div>
+
+                <div className="form-grupo form-grupo-select-curto">
+                  <label className="label-largo">Faz algum tratamento?</label>
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+
+                    <select
+                      value={anamnese.tratamento}
+                      onChange={(e) => alterarAnamnese("tratamento", e.target.value)}
+                    >
+                      <option value="N">Não</option>
+                      <option value="S">Sim</option>
+                    </select>
+
+                    {anamnese.tratamento === "S" && (
+                      <>
+                        <label>Qual?</label>
+                        <input
+                          type="text"
+                          style={{ width: "250px" }}
+                          placeholder="Descreva..."
+                        />
+                      </>
+                    )}
+
+                  </div>
+                </div>
+
+                <div className="form-grupo form-grupo-select-curto">
+                  <label className="label-largo">Sabe a sua pressão?</label>
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+
+                    <select
+                      value={anamnese.pressao}
+                      onChange={(e) => alterarAnamnese("pressao", e.target.value)}
+                    >
+                      <option value="N">Não</option>
+                      <option value="S">Sim</option>
+                    </select>
+
+                    {anamnese.pressao === "S" && (
+                      <>
+                        <label>Qual?</label>
+                        <input
+                          type="text"
+                          style={{ width: "250px" }}
+                          placeholder="Descreva..."
+                        />
+                      </>
+                    )}
+
+                  </div>
+                </div>
+
+                <div className="form-grupo form-grupo-select-curto">
+                  <label className="label-largo">Gostaria de relatar outro problema?</label>
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+
+                    <select
+                      value={anamnese.outro}
+                      onChange={(e) => alterarAnamnese("outro", e.target.value)}
+                    >
+                      <option value="N">Não</option>
+                      <option value="S">Sim</option>
+                    </select>
+
+                    {anamnese.outro === "S" && (
+                      <>
+                        <label>Qual?</label>
+                        <input
+                          type="text"
+                          style={{ width: "250px" }}
+                          placeholder="Descreva..."
+                        />
+                      </>
+                    )}
+
+                  </div>
+                </div>
+                </div>
+
+                <div>
+                {/* COLUNA DIREITA */}
+                <div className="form-grupo form-grupo-select-curto">
+                  <label className="label-largo">Está gestante?</label>
+                  <select
+                    value={anamnese.gestante}
+                    onChange={(e) => alterarAnamnese("gestante", e.target.value)}
+                  >
+                    <option value="N">Não</option>
+                    <option value="S">Sim</option>
+                  </select>
+                </div>
+
+                <div className="form-grupo form-grupo-select-curto">
+                  <label className="label-largo">Problemas de rins ou fígado?</label>
+                  <select
+                    value={anamnese.rins}
+                    onChange={(e) => alterarAnamnese("rins", e.target.value)}
+                  >
+                    <option value="N">Não</option>
+                    <option value="S">Sim</option>
+                  </select>
+                </div>
+
+                <div className="form-grupo form-grupo-select-curto">
+                  <label className="label-largo">Fumante?</label>
+                  <select
+                    value={anamnese.fumante}
+                    onChange={(e) => alterarAnamnese("fumante", e.target.value)}
+                  >
+                    <option value="N">Não</option>
+                    <option value="S">Sim</option>
+                  </select>
+                </div>
+
+                <div className="form-grupo form-grupo-select-curto">
+                  <label className="label-largo">Ja teve hepátite?</label>
+                  <select
+                    value={anamnese.hepatite}
+                    onChange={(e) => alterarAnamnese("hepatite", e.target.value)}
+                  >
+                    <option value="N">Não</option>
+                    <option value="S">Sim</option>
+                  </select>
+                </div>
+
+                    <div className="form-grupo form-grupo-select-curto">
+                  <label className="label-largo">Tem diabetes?</label>
+                  <select
+                    value={anamnese.diabetes}
+                    onChange={(e) => alterarAnamnese("diabetes", e.target.value)}
+                  >
+                    <option value="N">Não</option>
+                    <option value="S">Sim</option>
+                  </select>
+                </div>
+
+                <div className="form-grupo form-grupo-select-curto">
+                  <label className="label-largo">Tem asma?</label>
+                  <select
+                    value={anamnese.asma}
+                    onChange={(e) => alterarAnamnese("asma", e.target.value)}
+                  >
+                    <option value="N">Não</option>
+                    <option value="S">Sim</option>
+                  </select>
+                </div>
+
+                <div className="form-grupo form-grupo-select-curto">
+                  <label className="label-largo">Tem problemas cardíacos?</label>
+                  <select
+                    value={anamnese.cardiacos}
+                    onChange={(e) => alterarAnamnese("cardiacos", e.target.value)}
+                  >
+                    <option value="N">Não</option>
+                    <option value="S">Sim</option>
+                  </select>
+                </div>
+
+                <div className="form-grupo form-grupo-select-curto">
+                  <label className="label-largo">Ja teve convulsão?</label>
+                  <select
+                    value={anamnese.convulsao}
+                    onChange={(e) => alterarAnamnese("convulsao", e.target.value)}
+                  >
+                    <option value="N">Não</option>
+                    <option value="S">Sim</option>
+                  </select>
+                </div>
+
+                <div className="form-grupo form-grupo-select-curto">
+                  <label className="label-largo">Costuma sentir tontura?</label>
+                  <select
+                    value={anamnese.tontura}
+                    onChange={(e) => alterarAnamnese("tontura", e.target.value)}
+                  >
+                    <option value="N">Não</option>
+                    <option value="S">Sim</option>
+                  </select>
+                </div>
+
               </div>
-
-              <div className="form-grupo form-grupo-select-curto">
-                <label className="label-largo">Toma algum remédio?</label>
-                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-
-                <select
-                  value={anamnese.remedio}
-                  onChange={(e) => alterarAnamnese("remedio", e.target.value)}
-                >
-                  <option value="N">Não</option>
-                  <option value="S">Sim</option>
-                </select>
-
-                {anamnese.remedio === "S" && (
-                  <>
-                    <label>Qual?</label>
-                    <input
-                      type="text"
-                      style={{ width: "250px" }}
-                      placeholder="Descreva..."
-                    />
-                  </>
-                )}
-
-               </div>
-              </div>
-
-              <div className="form-grupo form-grupo-select-curto">
-                <label className="label-largo">Toma anticoncepcional?</label>
-                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-
-                <select
-                  value={anamnese.anticoncepcional}
-                  onChange={(e) => alterarAnamnese("anticoncepcional", e.target.value)}
-                >
-                  <option value="N">Não</option>
-                  <option value="S">Sim</option>
-                </select>
-
-                {anamnese.anticoncepcional === "S" && (
-                  <>
-                    <label>Qual?</label>
-                    <input
-                      type="text"
-                      style={{ width: "250px" }}
-                      placeholder="Descreva..."
-                    />
-                  </>
-                )}
-
-               </div>
-              </div>
-
-              <div className="form-grupo form-grupo-select-curto">
-                <label className="label-largo">Alergia a algum medicamento?</label>
-                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-
-                <select
-                  value={anamnese.alergiaMedicamento}
-                  onChange={(e) => alterarAnamnese("alergiaMedicamento", e.target.value)}
-                >
-                  <option value="N">Não</option>
-                  <option value="S">Sim</option>
-                </select>
-
-                {anamnese.alergiaMedicamento === "S" && (
-                  <>
-                    <label>Qual?</label>
-                    <input
-                      type="text"
-                      style={{ width: "250px" }}
-                      placeholder="Descreva..."
-                    />
-                  </>
-                )}
-
-               </div>
-              </div>
-
-              <div className="form-grupo form-grupo-select-curto">
-                <label className="label-largo">Faz algum tratamento?</label>
-                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-
-                <select
-                  value={anamnese.tratamento}
-                  onChange={(e) => alterarAnamnese("tratamento", e.target.value)}
-                >
-                  <option value="N">Não</option>
-                  <option value="S">Sim</option>
-                </select>
-
-                {anamnese.tratamento === "S" && (
-                  <>
-                    <label>Qual?</label>
-                    <input
-                      type="text"
-                      style={{ width: "250px" }}
-                      placeholder="Descreva..."
-                    />
-                  </>
-                )}
-
-               </div>
-              </div>
-
-              <div className="form-grupo form-grupo-select-curto">
-                <label className="label-largo">Sabe a sua pressão?</label>
-                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-
-                <select
-                  value={anamnese.pressao}
-                  onChange={(e) => alterarAnamnese("pressao", e.target.value)}
-                >
-                  <option value="N">Não</option>
-                  <option value="S">Sim</option>
-                </select>
-
-                {anamnese.pressao === "S" && (
-                  <>
-                    <label>Qual?</label>
-                    <input
-                      type="text"
-                      style={{ width: "250px" }}
-                      placeholder="Descreva..."
-                    />
-                  </>
-                )}
-
-               </div>
-              </div>
-
-              <div className="form-grupo form-grupo-select-curto">
-                <label className="label-largo">Gostaria de relatar outro problema?</label>
-                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-
-                <select
-                  value={anamnese.outro}
-                  onChange={(e) => alterarAnamnese("outro", e.target.value)}
-                >
-                  <option value="N">Não</option>
-                  <option value="S">Sim</option>
-                </select>
-
-                {anamnese.outro === "S" && (
-                  <>
-                    <label>Qual?</label>
-                    <input
-                      type="text"
-                      style={{ width: "250px" }}
-                      placeholder="Descreva..."
-                    />
-                  </>
-                )}
-
-               </div>
-              </div>
-
-            </>)}
-
-            <div className="barra-acoes">
-              <button className="botao-acao" title="Novo">
-                <FaPlus />
-              </button>
-
-              <button className="botao-acao" title="Salvar">
-                <FaSave />
-              </button>
-
-              <button className="botao-acao botao-inativar" title="Inativar">
-                <FaBan />
-              </button>
             </div>
+
+          </>)}
+
+          <div className="barra-acoes">
+            <button className="botao-acao" title="Novo">
+              <FaPlus />
+            </button>
+
+            <button className="botao-acao" title="Salvar">
+              <FaSave />
+            </button>
+
+            <button className="botao-acao botao-inativar" title="Inativar">
+              <FaBan />
+            </button>
+
+            <button className="botao-acao" title="Imprimir">
+              <FaPrint />
+            </button>
+
           </div>
         </div>
       </div>
-      );
+    </div>
+  );
 }
 
-      const estiloAba = {
-        padding: "10px 18px",
-      border: "1px solid #d6d6d6",
-      borderRadius: "10px",
-      backgroundColor: "#fff",
-      cursor: "pointer",
-      marginRight: "10px",
-      fontSize: "15px",
-      fontWeight: "600",
+const estiloAba = {
+  padding: "10px 18px",
+  border: "1px solid #d6d6d6",
+  borderRadius: "10px",
+  backgroundColor: "#fff",
+  cursor: "pointer",
+  marginRight: "10px",
+  fontSize: "15px",
+  fontWeight: "600",
 };
 
-      const estiloAbaAtiva = {
-        ...estiloAba,
-        backgroundColor: "#c97b1d",
-      color: "#fff",
-      border: "1px solid #c97b1d",
+const estiloAbaAtiva = {
+  ...estiloAba,
+  backgroundColor: "#c97b1d",
+  color: "#fff",
+  border: "1px solid #c97b1d",
 };
