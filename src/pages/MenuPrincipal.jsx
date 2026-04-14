@@ -4,12 +4,22 @@ import Clientes from "./Clientes";
 import Colaboradores from"./Coladoradores";
 import Insumos from "./Insumos";
 import Procedimentos from "./Procedimentos";
+import Agendamento from "./Agendamento";
+import Agenda from "./Agenda";
 
 export default function MenuPrincipal() {
   const [telaAtiva, setTelaAtiva] = useState("home");
 
   function renderizarConteudo() {
 
+    if (telaAtiva === "agenda") {
+      return <Agenda />;
+    }
+
+    if (telaAtiva === "agendamento") {
+      return <Agendamento />;
+    }
+    
     if (telaAtiva === "clientes") {
       return <Clientes />;
     }

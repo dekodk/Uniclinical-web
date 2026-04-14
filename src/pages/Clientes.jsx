@@ -504,10 +504,14 @@ export default function Clientes() {
                     )}
 
                   </div>
+                  
                 </div>
-                </div>
+                <button className="botao-acao" title="Imprimir">
+                    <FaPrint />
+                  </button>
+              </div>
 
-                <div>
+              <div>
                 {/* COLUNA DIREITA */}
                 <div className="form-grupo form-grupo-select-curto">
                   <label className="label-largo">Está gestante?</label>
@@ -553,7 +557,7 @@ export default function Clientes() {
                   </select>
                 </div>
 
-                    <div className="form-grupo form-grupo-select-curto">
+                <div className="form-grupo form-grupo-select-curto">
                   <label className="label-largo">Tem diabetes?</label>
                   <select
                     value={anamnese.diabetes}
@@ -607,7 +611,6 @@ export default function Clientes() {
                     <option value="S">Sim</option>
                   </select>
                 </div>
-
               </div>
             </div>
 
@@ -624,10 +627,6 @@ export default function Clientes() {
 
             <button className="botao-acao botao-inativar" title="Inativar">
               <FaBan />
-            </button>
-
-            <button className="botao-acao" title="Imprimir">
-              <FaPrint />
             </button>
 
           </div>

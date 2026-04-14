@@ -6,6 +6,7 @@ export default function Sidebar({ setTelaAtiva }) {
   const [recolhido, setRecolhido] = useState(false);
   const [menuAtivo, setMenuAtivo] = useState("");
   const [cadastroAberto, setCadastroAberto] = useState(false);
+  const [agendarAberto, setAgendarAberto] = useState(false);
 
   function alternarSidebar() {
     setRecolhido(!recolhido);
@@ -16,6 +17,14 @@ export default function Sidebar({ setTelaAtiva }) {
 
     if (nome === "Cadastrar") {
       setCadastroAberto(!cadastroAberto);
+      setAgendarAberto(false);
+    } else if (nome === "Agendar") {
+      setAgendarAberto(!agendarAberto);
+      setCadastroAberto(false);
+    } else {
+      setCadastroAberto(false);
+      setAgendarAberto(false);
+      setTelaAtiva(nome.toLowerCase());
     }
   }
 
@@ -41,8 +50,34 @@ export default function Sidebar({ setTelaAtiva }) {
           onClick={() => clicarMenu("Agendar")}
         >
           <span className="menu-icone">📅</span>
-          {!recolhido && <span className="menu-texto">Agendar</span>}
+
+          {!recolhido && (
+            <>
+              <span className="menu-texto">Agendar</span>
+              <span className="seta-submenu">
+                {agendarAberto ? "▲" : "▼"}
+              </span>
+            </>
+          )}
         </button>
+        
+        {!recolhido && agendarAberto && (
+          <div className="submenu">
+            <button
+              className="submenu-item"
+              onClick={() => setTelaAtiva("agendamento")}
+            >
+              Agendamento
+            </button>
+
+            <button
+              className="submenu-item"
+              onClick={() => setTelaAtiva("agenda")}
+            >
+              Agenda do Dia
+            </button>
+          </div>
+        )}
 
         <button
           className={`menu-item ${menuAtivo === "Cadastrar" ? "ativo" : ""}`}
