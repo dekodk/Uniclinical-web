@@ -1,14 +1,17 @@
 import { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Clientes from "./Clientes";
-import Colaboradores from"./Coladoradores";
+import Colaboradores from "./Coladoradores";
 import Insumos from "./Insumos";
 import Procedimentos from "./Procedimentos";
 import Agendamento from "./Agendamento";
 import Agenda from "./Agenda";
 
-export default function MenuPrincipal() {
+
+export default function MenuPrincipal({ onLogout, usuarioLogado }) {
   const [telaAtiva, setTelaAtiva] = useState("home");
+
+
 
   function renderizarConteudo() {
 
@@ -19,11 +22,11 @@ export default function MenuPrincipal() {
     if (telaAtiva === "agendamento") {
       return <Agendamento />;
     }
-    
+
     if (telaAtiva === "clientes") {
       return <Clientes />;
     }
-    
+
     if (telaAtiva === "colaboradores") {
       return <Colaboradores />;
     }
@@ -41,7 +44,11 @@ export default function MenuPrincipal() {
 
   return (
     <div className="menu-principal-layout">
-      <Sidebar setTelaAtiva={setTelaAtiva} />
+      <Sidebar
+        setTelaAtiva={setTelaAtiva}
+        onLogout={onLogout}
+        usuarioLogado={usuarioLogado}
+      />
 
       <main
         style={{
@@ -50,6 +57,12 @@ export default function MenuPrincipal() {
           backgroundColor: "#f9f9f9",
         }}
       >
+        <p>
+          <p className="usuario-logado">
+            Olá {usuarioLogado?.sub}, data de hoje: {new Date().toLocaleDateString("pt-BR")}.
+          </p>
+        </p>
+
         {renderizarConteudo()}
       </main>
     </div>

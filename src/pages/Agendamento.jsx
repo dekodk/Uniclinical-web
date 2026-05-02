@@ -83,6 +83,46 @@ export default function Agendamento() {
     }
   }
 
+  async function salvarAgendamento() {
+    const token = localStorage.getItem("token");
+
+    const dadosAgendamento = {
+      nomeCliente: form.clienteNome,
+      nomeProcedimento: form.procedimentoNome,
+      valorProcedimento: converterValorBRParaNumero(form.valorProcedimento),
+      nomeInsumo: form.insumoNome,
+      valorAdicional: converterValorBRParaNumero(form.descontoAcrescimo),
+      valorTotal: converterValorBRParaNumero(form.valorTotal),
+      observacao: form.observacao,
+      nomeUser: form.colaboradorNome,
+      situacao: true,
+      horaAgendamento: form.hora,
+      consultorio: form.sala,
+      dataAgendamento: form.data
+    };
+
+    try {
+      const response = await fetch("http://localhost:8080/agendamentos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(dadosAgendamento)
+      });
+
+      if (response.ok) {
+        alert("Agendamento salvo com sucesso!");
+      } else {
+        alert("Erro ao salvar agendamento.");
+      }
+
+    } catch (error) {
+      console.error(error);
+      alert("Erro ao conectar com o servidor.");
+    }
+  }
+
   function handleChange(e) {
     const { name, value } = e.target;
 
@@ -322,6 +362,7 @@ export default function Agendamento() {
           <div style={{ marginTop: "20px" }}>
             <button
               type="button"
+              onClick={salvarAgendamento}
               style={{
                 padding: "12px 24px",
                 borderRadius: "8px",

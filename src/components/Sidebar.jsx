@@ -2,7 +2,8 @@ import { useState } from "react";
 import "./Sidebar.css";
 import logoClinica from "../assets/Saúde e estética_logo.jpg";
 
-export default function Sidebar({ setTelaAtiva }) {
+export default function Sidebar({ setTelaAtiva, onLogout, usuarioLogado }) {
+  const isAdmin = usuarioLogado?.nivel === "ADMIN";
   const [recolhido, setRecolhido] = useState(false);
   const [menuAtivo, setMenuAtivo] = useState("");
   const [cadastroAberto, setCadastroAberto] = useState(false);
@@ -60,7 +61,7 @@ export default function Sidebar({ setTelaAtiva }) {
             </>
           )}
         </button>
-        
+
         {!recolhido && agendarAberto && (
           <div className="submenu">
             <button
@@ -146,7 +147,13 @@ export default function Sidebar({ setTelaAtiva }) {
 
         <button
           className={`menu-item ${menuAtivo === "Sair" ? "ativo" : ""}`}
-          onClick={() => clicarMenu("Sair")}
+          onClick={() => {
+            if (onLogout) {
+              onLogout();
+            } else {
+              clicarMenu("Sair");
+            }
+          }}
         >
           <span className="menu-icone">🚪</span>
           {!recolhido && <span className="menu-texto">Sair</span>}

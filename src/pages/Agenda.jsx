@@ -8,6 +8,7 @@ export default function Agenda() {
   const [agendamentos, setAgendamentos] = useState([]);
   const [carregando, setCarregando] = useState(false);
 
+
   useEffect(() => {
     carregarAgendamentos(dataFiltro);
   }, [dataFiltro]);
@@ -16,14 +17,29 @@ export default function Agenda() {
     try {
       setCarregando(true);
 
+      const token = localStorage.getItem("token");
+      console.log("TOKEN:", token);
+
       const response = await fetch(
-        `http://localhost:8080/agendamentos?data=${data}`
+        `http://localhost:8080/agendamentos/data/${data}`,
+        {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        }
       );
+
+      if (!response.ok) {
+        const erro = await response.text();
+        console.error("Erro da API:", erro);
+        alert("Erro ao buscar agenda: " + erro);
+        return;
+      }
 
       const dataJson = await response.json();
 
       const listaOrdenada = [...dataJson].sort((a, b) =>
-        (a.hora || "").localeCompare(b.hora || "")
+        (a.horaAgendamento || "").localeCompare(b.horaAgendamento || "")
       );
 
       setAgendamentos(listaOrdenada);
@@ -45,6 +61,15 @@ export default function Agenda() {
     const [ano, mes, dia] = data.split("-");
     return `${dia}/${mes}/${ano}`;
   }
+
+  function formatarMoeda(valor) {
+  if (valor === null || valor === undefined || valor === "") return "0,00";
+
+  return Number(valor).toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
 
   return (
     <div className="cadastros-page">
@@ -113,7 +138,7 @@ export default function Agenda() {
             <div style={{ display: "grid", gap: "14px" }}>
               {agendamentos.map((ag) => (
                 <div
-                  key={ag.id}
+                  key={ag.idAgendamento}
                   style={{
                     display: "grid",
                     gridTemplateColumns: "110px 1fr",
@@ -136,7 +161,7 @@ export default function Agenda() {
                       borderRight: "1px solid #eee",
                     }}
                   >
-                    {formatarHora(ag.hora)}
+                    {formatarHora(ag.horaAgendamento) || "--:--"}
                   </div>
 
                   <div style={{ padding: "16px 18px" }}>
@@ -148,13 +173,13 @@ export default function Agenda() {
                         color: "#2f2f2f",
                       }}
                     >
-                      {ag.clienteNome}
+                      {ag.nomeCliente}
                     </div>
 
                     <div
                       style={{
                         display: "grid",
-                        gridTemplateColumns: "repeat(3, minmax(140px, 1fr))",
+                        gridTemplateColumns: "repeat(4, minmax(140px, 1fr))",
                         gap: "10px",
                         fontSize: "14px",
                         color: "#444",
@@ -163,20 +188,27 @@ export default function Agenda() {
                       <div>
                         <strong>Procedimento:</strong>
                         <br />
-                        {ag.procedimentoNome || "-"}
+                        {ag.nomeProcedimento || "-"}
                       </div>
 
                       <div>
                         <strong>Colaborador:</strong>
                         <br />
-                        {ag.colaboradorNome || "-"}
+                        {ag.nomeUser || "-"}
                       </div>
 
                       <div>
                         <strong>Sala:</strong>
                         <br />
-                        {ag.sala || "-"}
+                        {ag.consultorio || "-"}
                       </div>
+
+                      <div>
+                        <strong>Valor:</strong>
+                        <br />
+                        R$ {formatarMoeda(ag.valorTotal)}
+                      </div>
+
                     </div>
 
                     {ag.observacao && (
