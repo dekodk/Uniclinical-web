@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 public class Colaborador {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idUser")
     private Integer idUser;
 
@@ -18,6 +19,9 @@ public class Colaborador {
     
     @Column(name = "nivel")
     private String nivel;
+    
+    @Column(name = "ativo")
+    private Boolean ativo;
     
     @Column(name = "nomeUser")
     private String nomeUser;
@@ -36,6 +40,14 @@ public class Colaborador {
 
     public void setNivel(String nivel) {
         this.nivel = nivel;
+    }
+
+    public Boolean getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
     }
 
     public Integer getIdUser() {
