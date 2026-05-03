@@ -1,6 +1,7 @@
 package com.uniclinical.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "insumo")
@@ -11,6 +12,7 @@ public class Insumo {
     @Column(name = "idInsumo")
     private Integer idInsumo;
 
+    @NotBlank(message = "Nome do insumo é obrigatório")
     @Column(name = "nomeInsumo")
     private String nomeInsumo;
 

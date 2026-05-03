@@ -55,6 +55,26 @@ export default function Colaboradores() {
       body.idSenha = idSenha;
     }
 
+    if (!nomeUser || nomeUser.trim() === "") {
+      alert("Informe o nome do colaborador.");
+      return;
+    }
+
+    if (!idLogin || idLogin.trim() === "") {
+      alert("Informe o login.");
+      return;
+    }
+
+    if (!nivel || nivel.trim() === "") {
+      alert("Informe o nível.");
+      return;
+    }
+
+    if (!idUser && (!idSenha || idSenha.trim() === "")) {
+      alert("Informe a senha.");
+      return;
+    }
+
     const response = await fetch(url, {
       method: metodo,
       headers: {

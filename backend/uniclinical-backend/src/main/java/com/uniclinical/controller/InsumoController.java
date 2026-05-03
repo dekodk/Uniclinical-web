@@ -2,6 +2,7 @@ package com.uniclinical.controller;
 
 import com.uniclinical.model.Insumo;
 import com.uniclinical.repository.InsumoRepository;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,7 @@ public class InsumoController {
 
     // 🔥 SALVAR
     @PostMapping
-    public Insumo salvar(@RequestBody Insumo insumo) {
+    public Insumo salvar(@Valid @RequestBody Insumo insumo) {
         if (insumo.getAtivo() == null) {
             insumo.setAtivo(true);
         }
@@ -33,7 +34,7 @@ public class InsumoController {
 
     // 🔥 ATUALIZAR
     @PutMapping("/{id}")
-    public Insumo atualizar(@PathVariable Integer id, @RequestBody Insumo insumo) {
+    public Insumo atualizar(@PathVariable Integer id, @Valid @RequestBody Insumo insumo) {
         insumo.setIdInsumo(id);
         return repository.save(insumo);
     }

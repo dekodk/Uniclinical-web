@@ -5,12 +5,13 @@ import com.uniclinical.repository.ColaboradorRepository;
 import java.util.List;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/colaboradores")
 public class ColaboradorController {
-    
+
     private final ColaboradorRepository repository;
     private final BCryptPasswordEncoder encoder;
 
@@ -30,20 +31,22 @@ public class ColaboradorController {
     }
 
     @PostMapping
-    public Colaborador salvar(@RequestBody Colaborador colaborador) {
+    public Colaborador salvar(@Valid @RequestBody Colaborador colaborador) {
+
+        if (colaborador.getIdSenha() == null || colaborador.getIdSenha().isBlank()) {
+            throw new RuntimeException("Senha é obrigatória");
+        }
         if (colaborador.getAtivo() == null) {
             colaborador.setAtivo(true);
         }
 
-        if (colaborador.getIdSenha() != null && !colaborador.getIdSenha().isBlank()) {
-            colaborador.setIdSenha(encoder.encode(colaborador.getIdSenha()));
-        }
+        colaborador.setIdSenha(encoder.encode(colaborador.getIdSenha()));
 
         return repository.save(colaborador);
     }
 
     @PutMapping("/{id}")
-    public Colaborador atualizar(@PathVariable Integer id, @RequestBody Colaborador colaborador) {
+    public Colaborador atualizar(@PathVariable Integer id, @Valid @RequestBody Colaborador colaborador) {
         Colaborador existente = repository.findById(id).orElseThrow();
 
         existente.setIdLogin(colaborador.getIdLogin());
@@ -64,5 +67,5 @@ public class ColaboradorController {
         colaborador.setAtivo(false);
         repository.save(colaborador);
     }
-    
+
 }

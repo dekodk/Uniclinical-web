@@ -27,6 +27,14 @@ export default function Clientes() {
     numero: "",
   });
 
+  const [idCliente, setIdCliente] = useState("");
+  const [nomeCliente, setNomeCliente] = useState("");
+  const [cpfCliente, setCpfCliente] = useState("");
+  const [rgCliente, setRgCliente] = useState("");
+  const [dtnCliente, setDtnCliente] = useState("");
+  const [busca, setBusca] = useState("");
+  const [lista, setLista] = useState([]);
+
   function formatarCPF(valor) {
     let v = valor.replace(/\D/g, "");
     v = v.slice(0, 11);
@@ -50,6 +58,73 @@ export default function Clientes() {
       ...prev,
       [name]: name === "cep" ? formatarCEP(value) : value,
     }));
+  }
+
+  async function salvarCliente() {
+    const token = localStorage.getItem("token");
+
+    if (!nomeCliente || nomeCliente.trim() === "") {
+      alert("Informe o nome do cliente.");
+      return;
+    }
+
+    if (!cpfCliente || cpfCliente.trim() === "") {
+      alert("Informe o CPF.");
+      return;
+    }
+
+    const metodo = idCliente ? "PUT" : "POST";
+    const url = idCliente
+      ? `http://localhost:8080/clientes/${idCliente}`
+      : "http://localhost:8080/clientes";
+
+    const response = await fetch(url, {
+      method: metodo,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        nomeCliente,
+        cpfCliente,
+        rgCliente,
+        dtnCliente,
+        ativo: true,
+      }),
+    });
+
+    if (response.ok) {
+      const clienteSalvo = await response.json();
+
+      // 🔥 ESSA LINHA É O CORAÇÃO DO SISTEMA
+      setIdCliente(clienteSalvo.idCliente);
+
+      alert("Cliente salvo com sucesso!");
+      listarClientes();
+    } else {
+      alert("Erro ao salvar cliente.");
+    }
+  }
+
+  async function listarClientes() {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch("http://localhost:8080/clientes", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await response.json();
+    setLista(data);
+  }
+
+  function selecionar(cliente) {
+    setIdCliente(cliente.idCliente);
+    setNomeCliente(cliente.nomeCliente);
+    setCpfCliente(cliente.cpfCliente);
+    setRgCliente(cliente.rgCliente);
+    setDtnCliente(cliente.dtnCliente);
   }
 
   async function buscarCEP() {
@@ -92,6 +167,9 @@ export default function Clientes() {
   }
 
   return (
+
+
+
     <div className="cadastros-page">
       <div className="cadastros-topo">
         <h1>Cadastro de Clientes</h1>
@@ -133,17 +211,27 @@ export default function Clientes() {
             </button>
           </div>
 
+          {abaAtiva !== "dados" && !idCliente && (
+            <p style={{ color: "red", fontWeight: "600" }}>
+              Salve os dados básicos do cliente antes de preencher esta aba.
+            </p>
+          )}
+
           {abaAtiva === "dados" && (
             <>
               <div className="form-linha">
                 <div className="form-grupo codigo">
                   <label>Código</label>
-                  <input type="text" />
+                  <input type="text" value={idCliente} readOnly />
                 </div>
 
                 <div className="form-grupo nome">
                   <label>Nome do cliente</label>
-                  <input type="text" />
+                  <input
+                    type="text"
+                    value={nomeCliente}
+                    onChange={(e) => setNomeCliente(e.target.value)}
+                  />
                 </div>
               </div>
 
@@ -152,14 +240,18 @@ export default function Clientes() {
                   <label>CPF</label>
                   <input
                     type="text"
-                    value={cpf}
-                    onChange={(e) => setCpf(formatarCPF(e.target.value))}
+                    value={cpfCliente}
+                    onChange={(e) => setCpfCliente(formatarCPF(e.target.value))}
                   />
                 </div>
 
                 <div className="form-grupo" style={{ width: "220px" }}>
                   <label>Data de nascimento</label>
-                  <input type="date" />
+                  <input
+                    type="date"
+                    value={dtnCliente}
+                    onChange={(e) => setDtnCliente(e.target.value)}
+                  />
                 </div>
 
                 <div className="form-grupo" style={{ width: "120px" }}>
@@ -176,13 +268,17 @@ export default function Clientes() {
               <div className="form-linha">
                 <div className="form-grupo" style={{ width: "180px" }}>
                   <label>RG</label>
-                  <input type="text" />
+                  <input
+                    type="text"
+                    value={rgCliente}
+                    onChange={(e) => setRgCliente(e.target.value)}
+                  />
                 </div>
               </div>
             </>
           )}
 
-          {abaAtiva === "endereco" && (
+          {abaAtiva === "endereco" && idCliente && (
             <>
               <div className="form-linha">
                 <div className="form-grupo" style={{ width: "150px" }}>
@@ -305,7 +401,7 @@ export default function Clientes() {
             </>
           )}
 
-          {abaAtiva === "contatos" && (
+          {abaAtiva === "contatos" && idCliente && (
             <>
               <div className="form-linha">
                 <div className="form-grupo" style={{ width: "220px" }}>
@@ -319,7 +415,7 @@ export default function Clientes() {
                 </div>
               </div>
             </>)}
-          {abaAtiva === "ficha" && (<>
+          {abaAtiva === "ficha" && idCliente && (<>
             <div style={{ display: "flex", alignItems: "flex-start", gap: "60px" }}>
               <div>
                 {/* COLUNA ESQUERDA */}
@@ -504,11 +600,11 @@ export default function Clientes() {
                     )}
 
                   </div>
-                  
+
                 </div>
                 <button className="botao-acao" title="Imprimir">
-                    <FaPrint />
-                  </button>
+                  <FaPrint />
+                </button>
               </div>
 
               <div>
@@ -621,7 +717,7 @@ export default function Clientes() {
               <FaPlus />
             </button>
 
-            <button className="botao-acao" title="Salvar">
+            <button className="botao-acao" title="Salvar" onClick={salvarCliente}>
               <FaSave />
             </button>
 

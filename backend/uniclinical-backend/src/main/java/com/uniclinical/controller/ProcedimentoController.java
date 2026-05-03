@@ -4,6 +4,7 @@ import com.uniclinical.model.Procedimento;
 import com.uniclinical.repository.ProcedimentoRepository;
 import java.util.List;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
@@ -19,7 +20,7 @@ public class ProcedimentoController {
         return repository.findByAtivoTrue();
     }
     @PostMapping
-    public Procedimento salvar(@RequestBody Procedimento p) {
+    public Procedimento salvar(@Valid @RequestBody Procedimento p){
         if (p.getAtivo() == null) {
             p.setAtivo(true);
         }

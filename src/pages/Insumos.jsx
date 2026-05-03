@@ -38,6 +38,11 @@ export default function Insumos() {
       ? `http://localhost:8080/insumos/${idInsumo}`
       : "http://localhost:8080/insumos";
 
+    if (!nomeInsumo || nomeInsumo.trim() === "") {
+      alert("Informe o nome do insumo.");
+      return;
+    }
+
     const response = await fetch(url, {
       method: metodo,
       headers: {
@@ -60,26 +65,26 @@ export default function Insumos() {
   }
 
   async function buscarInsumos(valor) {
-  const token = localStorage.getItem("token");
-  const texto = (valor ?? "").trim();
+    const token = localStorage.getItem("token");
+    const texto = (valor ?? "").trim();
 
-  if (texto.length === 0) {
-    await listarInsumos();
-    return;
-  }
-
-  const response = await fetch(
-    `http://localhost:8080/insumos/buscar?nome=${encodeURIComponent(texto)}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    if (texto.length === 0) {
+      await listarInsumos();
+      return;
     }
-  );
 
-  const data = await response.json();
-  setInsumos(data);
-}
+    const response = await fetch(
+      `http://localhost:8080/insumos/buscar?nome=${encodeURIComponent(texto)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = await response.json();
+    setInsumos(data);
+  }
 
   async function inativar() {
     if (!idInsumo) {

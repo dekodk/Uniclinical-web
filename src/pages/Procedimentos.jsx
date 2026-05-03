@@ -24,13 +24,13 @@ export default function Procedimentos() {
   }
 
   function formatarMoeda(valor) {
-  if (!valor) return "0,00";
+    if (!valor) return "0,00";
 
-  return Number(valor).toLocaleString("pt-BR", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-}
+    return Number(valor).toLocaleString("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
 
   function converterValorBRParaNumero(valor) {
     if (!valor) return 0;
@@ -63,6 +63,16 @@ export default function Procedimentos() {
     const url = idProcedimento
       ? `http://localhost:8080/procedimentos/${idProcedimento}`
       : "http://localhost:8080/procedimentos";
+
+    if (!nome || nome.trim() === "") {
+      alert("Informe o nome do procedimento.");
+      return;
+    }
+
+    if (!valor || valor === "0,00") {
+      alert("Informe o valor do procedimento.");
+      return;
+    }
 
     const response = await fetch(url, {
       method: metodo,

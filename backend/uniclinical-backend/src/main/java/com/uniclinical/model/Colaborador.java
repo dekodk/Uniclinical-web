@@ -1,6 +1,7 @@
 package com.uniclinical.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "colaborador")
@@ -11,18 +12,21 @@ public class Colaborador {
     @Column(name = "idUser")
     private Integer idUser;
 
+    @NotBlank(message = "Login é obrigatório")
     @Column(name = "idLogin")
     private String idLogin;
 
     @Column(name = "idSenha")
     private String idSenha;
     
+    @NotBlank(message = "Nível é obrigatório")
     @Column(name = "nivel")
     private String nivel;
     
     @Column(name = "ativo")
     private Boolean ativo;
     
+    @NotBlank(message = "Nome do colaborador é obrigatório")
     @Column(name = "nomeUser")
     private String nomeUser;
 
