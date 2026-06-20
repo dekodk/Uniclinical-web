@@ -1,19 +1,37 @@
 import "./cadastros.css";
-import { FaPlus, FaSave, FaBan, FaPrint } from "react-icons/fa";
+import { FaPlus, FaSave, FaBan, FaTrash, FaEdit } from "react-icons/fa";
 import { useState } from "react";
+
+const ANAMNESE_INICIAL = {
+  cirurgia: "N",
+  cirurgiaQual: "",
+  remedio: "N",
+  remedioQual: "",
+  anticoncepcional: "N",
+  anticoncepcionalQual: "",
+  alergiaMedicamento: "N",
+  alergiaMedicamentoQual: "",
+  tratamento: "N",
+  tratamentoQual: "",
+  pressao: "N",
+  pressaoQual: "",
+  outro: "N",
+  outroQual: "",
+  gestante: "N",
+  rins: "N",
+  fumante: "N",
+  hepatite: "N",
+  diabetes: "N",
+  asma: "N",
+  cardiacos: "N",
+  convulsao: "N",
+  tontura: "N",
+};
 
 export default function Clientes() {
   const [cpf, setCpf] = useState("");
   const [abaAtiva, setAbaAtiva] = useState("dados");
-  const [anamnese, setAnamnese] = useState({
-    cirurgia: "N",
-    remedio: "N",
-    anticoncepcional: "N",
-    alergiaMedicamento: "N",
-    tratamento: "N",
-    pressao: "N",
-    outro: "N",
-  });
+  const [anamnese, setAnamnese] = useState({ ...ANAMNESE_INICIAL });
 
   const [endereco, setEndereco] = useState({
     codigo: "",
@@ -32,6 +50,7 @@ export default function Clientes() {
   const [cpfCliente, setCpfCliente] = useState("");
   const [rgCliente, setRgCliente] = useState("");
   const [dtnCliente, setDtnCliente] = useState("");
+  const [sexoCliente, setSexoCliente] = useState("");
   const [busca, setBusca] = useState("");
   const [lista, setLista] = useState([]);
 
@@ -51,16 +70,50 @@ export default function Clientes() {
     return v;
   }
 
+  function somenteNumeros(valor) {
+    return valor.replace(/\D/g, "");
+  }
+
+  function formatarData(valor) {
+    if (!valor) {
+      return "";
+    }
+
+    const data = String(valor).split("T")[0];
+    const partes = data.split("-");
+
+    if (partes.length !== 3) {
+      return valor;
+    }
+
+    const [ano, mes, dia] = partes;
+    return `${dia}/${mes}/${ano}`;
+  }
+
   function handleEnderecoChange(e) {
     const { name, value } = e.target;
 
     setEndereco((prev) => ({
       ...prev,
-      [name]: name === "cep" ? formatarCEP(value) : value,
+      [name]:
+        name === "cep"
+          ? formatarCEP(value)
+          : name === "numero" || name === "unidade"
+            ? somenteNumeros(value)
+            : value,
     }));
   }
 
+  const [novoContato, setNovoContato] = useState({
+    tipo: "Telefone",
+    valor: "",
+    descricao: "",
+  });
+
+  const [contatos, setContatos] = useState([]);
+
   async function salvarCliente() {
+    console.log("ENTROU NO salvarCliente");
     const token = localStorage.getItem("token");
 
     if (!nomeCliente || nomeCliente.trim() === "") {
@@ -89,6 +142,7 @@ export default function Clientes() {
         cpfCliente,
         rgCliente,
         dtnCliente,
+        sexoCliente,
         ativo: true,
       }),
     });
@@ -119,12 +173,136 @@ export default function Clientes() {
     setLista(data);
   }
 
+  async function buscarClientes(valorBusca) {
+    const token = localStorage.getItem("token");
+    const texto = (valorBusca ?? "").trim();
+
+    if (texto === "") {
+      setLista([]);
+      return;
+    }
+
+    const response = await fetch(
+      `http://localhost:8080/clientes/buscar?nome=${encodeURIComponent(texto)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = await response.json();
+    setLista(data);
+  }
+
+  async function salvarEndereco() {
+    console.log("ENTROU NO salvarEndereco");
+    if (!idCliente) {
+      alert("Salve os dados básicos do cliente antes de salvar o endereço.");
+      return;
+    }
+
+    if (!endereco.logradouro || endereco.logradouro.trim() === "") {
+      alert("Informe o logradouro.");
+      return;
+    }
+
+    if (!endereco.bairro || endereco.bairro.trim() === "") {
+      alert("Informe o bairro.");
+      return;
+    }
+
+    if (!endereco.cidade || endereco.cidade.trim() === "") {
+      alert("Informe a cidade.");
+      return;
+    }
+
+    if (!endereco.estado || endereco.estado.trim() === "") {
+      alert("Informe o estado.");
+      return;
+    }
+
+    if (!endereco.cep || endereco.cep.trim() === "") {
+      alert("Informe o CEP.");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(`http://localhost:8080/enderecos/${idCliente}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        idCliente: Number(idCliente),
+        lograEndereco: endereco.logradouro,
+        bairroEndereco: endereco.bairro,
+        cidadeEndereco: endereco.cidade,
+        estadoEndereco: endereco.estado,
+        cepEndereco: endereco.cep,
+        compleEndereco: endereco.complemento,
+        numeroEndereco: endereco.numero,
+        unidadeEndereco: endereco.unidade,
+      }),
+    });
+
+    if (response.ok) {
+      alert("Endereço salvo com sucesso!");
+    } else {
+      alert("Erro ao salvar endereço.");
+    }
+  }
+
+  async function buscarEndereco(idClienteSelecionado) {
+    const token = localStorage.getItem("token");
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/enderecos/${idClienteSelecionado}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        return;
+      }
+
+      const data = await response.json();
+
+      if (data) {
+        setEndereco({
+          codigo: data.idCliente || "",
+          cep: data.cepEndereco || "",
+          logradouro: data.lograEndereco || "",
+          complemento: data.compleEndereco || "",
+          unidade: data.unidadeEndereco || "",
+          bairro: data.bairroEndereco || "",
+          cidade: data.cidadeEndereco || "",
+          estado: data.estadoEndereco || "",
+          numero: data.numeroEndereco || "",
+        });
+      }
+    } catch (error) {
+      console.error("Erro ao buscar endereço:", error);
+    }
+  }
+
   function selecionar(cliente) {
     setIdCliente(cliente.idCliente);
     setNomeCliente(cliente.nomeCliente);
     setCpfCliente(cliente.cpfCliente);
     setRgCliente(cliente.rgCliente);
-    setDtnCliente(cliente.dtnCliente);
+    setDtnCliente(cliente.dtnCliente || "");
+    setSexoCliente(cliente.sexoCliente || "");
+
+    buscarEndereco(cliente.idCliente);
+    buscarContatos(cliente.idCliente);
+    buscarFichaMedica(cliente.idCliente);
   }
 
   async function buscarCEP() {
@@ -159,11 +337,421 @@ export default function Clientes() {
     }
   }
 
+  async function buscarContatos(idClienteSelecionado) {
+    const token = localStorage.getItem("token");
+
+    try {
+      const headers = { Authorization: `Bearer ${token}` };
+      const [responseEmails, responseTelefones] = await Promise.all([
+        fetch(`http://localhost:8080/emails/cliente/${idClienteSelecionado}`, { headers }),
+        fetch(`http://localhost:8080/telefones/cliente/${idClienteSelecionado}`, { headers }),
+      ]);
+
+      if (!responseEmails.ok || !responseTelefones.ok) {
+        throw new Error("Não foi possível carregar os contatos do cliente.");
+      }
+
+      const [emails, telefones] = await Promise.all([
+        responseEmails.json(),
+        responseTelefones.json(),
+      ]);
+
+      const contatosCarregados = [
+        ...telefones.map((telefone) => ({
+          id: `telefone-${telefone.idtelefone}`,
+          idRegistro: telefone.idtelefone,
+          origem: "telefone",
+          tipo: telefone.tipofoneCliente || "Telefone",
+          valor: telefone.foneCliente,
+          descricao: telefone.descObsCliente || "",
+          dataCadastro: telefone.dataCadFoneCliente || "",
+        })),
+        ...emails.map((email) => ({
+          id: `email-${email.idemail}`,
+          idRegistro: email.idemail,
+          origem: "email",
+          tipo: email.tipoEmailCliente || "E-mail",
+          valor: email.emailCliente,
+          descricao: email.descObsCliente || "",
+          dataCadastro: email.dataCadEmail || "",
+        })),
+      ];
+
+      setContatos(contatosCarregados);
+    } catch (error) {
+      console.error("Erro ao buscar contatos:", error);
+      setContatos([]);
+    }
+  }
+
   function alterarAnamnese(campo, valor) {
     setAnamnese((prev) => ({
       ...prev,
       [campo]: valor,
+      ...(valor === "N" && `${campo}Qual` in prev ? { [`${campo}Qual`]: "" } : {}),
     }));
+  }
+
+  function alterarDetalheAnamnese(campo, valor) {
+    setAnamnese((prev) => ({
+      ...prev,
+      [campo]: valor,
+    }));
+  }
+
+  function interpretarRespostaHistorico(valor) {
+    const texto = String(valor || "").trim();
+
+    if (/^sim\b/i.test(texto)) {
+      return {
+        resposta: "S",
+        detalhe: texto.replace(/^sim\s*,?\s*/i, ""),
+      };
+    }
+
+    return { resposta: "N", detalhe: "" };
+  }
+
+  function montarRespostaHistorico(resposta, detalhe = "") {
+    if (resposta !== "S") {
+      return "Não";
+    }
+
+    const textoDetalhe = detalhe.trim();
+    return textoDetalhe ? `Sim, ${textoDetalhe}` : "Sim";
+  }
+
+  function converterHistoricoParaAnamnese(data) {
+    const cirurgia = interpretarRespostaHistorico(data.cirurgia);
+    const remedio = interpretarRespostaHistorico(data.remedio);
+    const anticoncepcional = interpretarRespostaHistorico(data.anticoncepcional);
+    const alergia = interpretarRespostaHistorico(data.alergiaMedicamento);
+    const tratamento = interpretarRespostaHistorico(data.tratamentoMedico);
+    const pressao = interpretarRespostaHistorico(data.pressaoArterial);
+    const outro = interpretarRespostaHistorico(data.outroProblema);
+
+    return {
+      ...ANAMNESE_INICIAL,
+      cirurgia: cirurgia.resposta,
+      cirurgiaQual: cirurgia.detalhe,
+      remedio: remedio.resposta,
+      remedioQual: remedio.detalhe,
+      anticoncepcional: anticoncepcional.resposta,
+      anticoncepcionalQual: anticoncepcional.detalhe,
+      alergiaMedicamento: alergia.resposta,
+      alergiaMedicamentoQual: alergia.detalhe,
+      tratamento: tratamento.resposta,
+      tratamentoQual: tratamento.detalhe,
+      pressao: pressao.resposta,
+      pressaoQual: pressao.detalhe,
+      outro: outro.resposta,
+      outroQual: outro.detalhe,
+      gestante: interpretarRespostaHistorico(data.estaGestante).resposta,
+      rins: interpretarRespostaHistorico(data.problemaRinsFigado).resposta,
+      fumante: interpretarRespostaHistorico(data.fumante).resposta,
+      hepatite: interpretarRespostaHistorico(data.hepatite).resposta,
+      diabetes: interpretarRespostaHistorico(data.diabetes).resposta,
+      asma: interpretarRespostaHistorico(data.asma).resposta,
+      cardiacos: interpretarRespostaHistorico(data.problemaCardiaco).resposta,
+      convulsao: interpretarRespostaHistorico(data.convulsao).resposta,
+      tontura: interpretarRespostaHistorico(data.tontura).resposta,
+    };
+  }
+
+  async function buscarFichaMedica(idClienteSelecionado) {
+    const token = localStorage.getItem("token");
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/fichas-medicas/${idClienteSelecionado}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (response.status === 404) {
+        setAnamnese({ ...ANAMNESE_INICIAL });
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error("Não foi possível carregar a ficha médica.");
+      }
+
+      const data = await response.json();
+      setAnamnese(converterHistoricoParaAnamnese(data));
+    } catch (error) {
+      console.error("Erro ao buscar ficha médica:", error);
+      setAnamnese({ ...ANAMNESE_INICIAL });
+    }
+  }
+
+  async function salvarFichaMedica() {
+    if (!idCliente) {
+      alert("Selecione ou salve um cliente antes de salvar a ficha médica.");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    const historico = {
+      idCliente: Number(idCliente),
+      cirurgia: montarRespostaHistorico(anamnese.cirurgia, anamnese.cirurgiaQual),
+      remedio: montarRespostaHistorico(anamnese.remedio, anamnese.remedioQual),
+      anticoncepcional: montarRespostaHistorico(
+        anamnese.anticoncepcional,
+        anamnese.anticoncepcionalQual
+      ),
+      alergiaMedicamento: montarRespostaHistorico(
+        anamnese.alergiaMedicamento,
+        anamnese.alergiaMedicamentoQual
+      ),
+      tratamentoMedico: montarRespostaHistorico(
+        anamnese.tratamento,
+        anamnese.tratamentoQual
+      ),
+      pressaoArterial: montarRespostaHistorico(anamnese.pressao, anamnese.pressaoQual),
+      outroProblema: montarRespostaHistorico(anamnese.outro, anamnese.outroQual),
+      estaGestante: montarRespostaHistorico(anamnese.gestante),
+      problemaRinsFigado: montarRespostaHistorico(anamnese.rins),
+      fumante: montarRespostaHistorico(anamnese.fumante),
+      hepatite: montarRespostaHistorico(anamnese.hepatite),
+      diabetes: montarRespostaHistorico(anamnese.diabetes),
+      asma: montarRespostaHistorico(anamnese.asma),
+      problemaCardiaco: montarRespostaHistorico(anamnese.cardiacos),
+      convulsao: montarRespostaHistorico(anamnese.convulsao),
+      tontura: montarRespostaHistorico(anamnese.tontura),
+    };
+
+    const campoMuitoLongo = Object.values(historico).some(
+      (valor) => typeof valor === "string" && valor.length > 45
+    );
+
+    if (campoMuitoLongo) {
+      alert("As descrições da ficha médica devem ter no máximo 40 caracteres.");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/fichas-medicas/${idCliente}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(historico),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Não foi possível salvar a ficha médica.");
+      }
+
+      const fichaSalva = await response.json();
+      setAnamnese(converterHistoricoParaAnamnese(fichaSalva));
+      alert("Ficha médica salva com sucesso!");
+    } catch (error) {
+      console.error("Erro ao salvar ficha médica:", error);
+      alert("Erro ao salvar a ficha médica.");
+    }
+  }
+
+  const estiloBotaoAcao = {
+    width: "46px",
+    height: "46px",
+    borderRadius: "12px",
+    border: "none",
+    backgroundColor: "#c97b1d",
+    color: "#fff",
+    cursor: "pointer",
+    fontSize: "18px",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: "10px",
+  };
+
+  const estiloBotaoInativar = {
+    ...estiloBotaoAcao,
+    backgroundColor: "#9b2c2c",
+  };
+
+  function handleContatoChange(e) {
+    const { name, value } = e.target;
+
+    setNovoContato((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }
+
+  async function adicionarContato() {
+    if (!idCliente) {
+      alert("Selecione ou salve um cliente antes de adicionar o contato.");
+      return;
+    }
+
+    if (!novoContato.valor.trim()) {
+      alert("Informe o valor do contato.");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    const ehTelefone = novoContato.tipo === "Telefone";
+    const url = ehTelefone
+      ? "http://localhost:8080/telefones"
+      : "http://localhost:8080/emails";
+    const body = ehTelefone
+      ? {
+          idCliente: Number(idCliente),
+          foneCliente: novoContato.valor.trim(),
+          tipofoneCliente: novoContato.tipo,
+          descObsCliente: novoContato.descricao.trim(),
+        }
+      : {
+          idCliente: Number(idCliente),
+          emailCliente: novoContato.valor.trim(),
+          tipoEmailCliente: novoContato.tipo,
+          descObsCliente: novoContato.descricao.trim(),
+        };
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!response.ok) {
+        throw new Error("Não foi possível adicionar o contato.");
+      }
+
+      await buscarContatos(idCliente);
+      setNovoContato({
+        tipo: "Telefone",
+        valor: "",
+        descricao: "",
+      });
+      alert("Contato adicionado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao adicionar contato:", error);
+      alert("Erro ao adicionar o contato.");
+    }
+  }
+
+  async function editarContato(contato) {
+    const valorEditado = window.prompt("Edite o valor do contato:", contato.valor);
+
+    if (valorEditado === null) {
+      return;
+    }
+
+    if (!valorEditado.trim()) {
+      alert("Informe o valor do contato.");
+      return;
+    }
+
+    const descricaoEditada = window.prompt(
+      "Edite a descrição / observação:",
+      contato.descricao || ""
+    );
+
+    if (descricaoEditada === null) {
+      return;
+    }
+
+    if (!contato.origem || !contato.idRegistro) {
+      setContatos((prev) =>
+        prev.map((item) =>
+          item.id === contato.id
+            ? { ...item, valor: valorEditado.trim(), descricao: descricaoEditada.trim() }
+            : item
+        )
+      );
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    const ehTelefone = contato.origem === "telefone";
+    const url = ehTelefone
+      ? `http://localhost:8080/telefones/${contato.idRegistro}`
+      : `http://localhost:8080/emails/${contato.idRegistro}`;
+    const body = ehTelefone
+      ? {
+          idtelefone: contato.idRegistro,
+          idCliente: Number(idCliente),
+          foneCliente: valorEditado.trim(),
+          tipofoneCliente: contato.tipo,
+          descObsCliente: descricaoEditada.trim(),
+          dataCadFoneCliente: contato.dataCadastro || null,
+        }
+      : {
+          idemail: contato.idRegistro,
+          idCliente: Number(idCliente),
+          emailCliente: valorEditado.trim(),
+          tipoEmailCliente: contato.tipo,
+          descObsCliente: descricaoEditada.trim(),
+          dataCadEmail: contato.dataCadastro || null,
+        };
+
+    try {
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!response.ok) {
+        throw new Error("Não foi possível atualizar o contato.");
+      }
+
+      await buscarContatos(idCliente);
+      alert("Contato atualizado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao editar contato:", error);
+      alert("Erro ao atualizar o contato.");
+    }
+  }
+
+  async function excluirContato(contato) {
+    const confirmou = window.confirm(`Deseja realmente excluir o contato ${contato.valor}?`);
+
+    if (!confirmou) {
+      return;
+    }
+
+    if (!contato.origem || !contato.idRegistro) {
+      setContatos((prev) => prev.filter((item) => item.id !== contato.id));
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    const recurso = contato.origem === "telefone" ? "telefones" : "emails";
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/${recurso}/${contato.idRegistro}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Não foi possível excluir o contato.");
+      }
+
+      setContatos((prev) => prev.filter((item) => item.id !== contato.id));
+      alert("Contato excluído com sucesso!");
+    } catch (error) {
+      console.error("Erro ao excluir contato:", error);
+      alert("Erro ao excluir o contato.");
+    }
   }
 
   return (
@@ -211,6 +799,54 @@ export default function Clientes() {
             </button>
           </div>
 
+          <div className="form-linha" style={{ marginBottom: "20px" }}>
+            <div className="form-grupo nome">
+              <label>Buscar cliente</label>
+              <input
+                type="text"
+                value={busca}
+                onChange={(e) => {
+                  const valor = e.target.value;
+                  setBusca(valor);
+                  buscarClientes(valor);
+                }}
+                placeholder="Digite o nome do cliente"
+              />
+            </div>
+          </div>
+
+          {lista.length > 0 && (
+            <div style={{ marginBottom: "24px" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                <thead>
+                  <tr>
+                    <th style={{ textAlign: "left" }}>Código</th>
+                    <th style={{ textAlign: "left" }}>Nome</th>
+                    <th style={{ textAlign: "left" }}>CPF</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {lista.map((cliente) => (
+                    <tr
+                      key={cliente.idCliente}
+                      onClick={() => {
+                        selecionar(cliente);
+                        setLista([]);
+                        setBusca(cliente.nomeCliente);
+                      }}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <td>{cliente.idCliente}</td>
+                      <td>{cliente.nomeCliente}</td>
+                      <td>{cliente.cpfCliente}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
           {abaAtiva !== "dados" && !idCliente && (
             <p style={{ color: "red", fontWeight: "600" }}>
               Salve os dados básicos do cliente antes de preencher esta aba.
@@ -256,7 +892,10 @@ export default function Clientes() {
 
                 <div className="form-grupo" style={{ width: "120px" }}>
                   <label>Sexo</label>
-                  <select>
+                  <select
+                    value={sexoCliente}
+                    onChange={(e) => setSexoCliente(e.target.value)}
+                  >
                     <option value="">Selecione</option>
                     <option value="M">Masculino</option>
                     <option value="F">Feminino</option>
@@ -275,10 +914,23 @@ export default function Clientes() {
                   />
                 </div>
               </div>
+              <div style={{ marginTop: "24px" }}>
+                <button type="button" style={estiloBotaoAcao} title="Novo">
+                  <FaPlus />
+                </button>
+
+                <button type="button" style={estiloBotaoAcao} title="Salvar dados básicos" onClick={salvarCliente}>
+                  <FaSave />
+                </button>
+
+                <button type="button" style={estiloBotaoInativar} title="Inativar cliente">
+                  <FaBan />
+                </button>
+              </div>
             </>
           )}
 
-          {abaAtiva === "endereco" && idCliente && (
+          {abaAtiva === "endereco" && (
             <>
               <div className="form-linha">
                 <div className="form-grupo" style={{ width: "150px" }}>
@@ -398,24 +1050,157 @@ export default function Clientes() {
                   />
                 </div>
               </div>
+              <div style={{ marginTop: "24px" }}>
+                <button type="button" style={estiloBotaoAcao} title="Salvar dados endereço" onClick={salvarEndereco}>
+                  <FaSave />
+                </button>
+              </div>
             </>
           )}
 
-          {abaAtiva === "contatos" && idCliente && (
+          {abaAtiva === "contatos" && (
             <>
+              <h3 style={{ marginTop: "28px", marginBottom: "16px" }}>
+                Adicionar novo contato
+              </h3>
+
               <div className="form-linha">
                 <div className="form-grupo" style={{ width: "220px" }}>
-                  <label>Telefone</label>
-                  <input type="text" />
+                  <label>Tipo</label>
+                  <select
+                    name="tipo"
+                    value={novoContato.tipo}
+                    onChange={handleContatoChange}
+                  >
+                    <option value="Telefone">Telefone</option>
+                    <option value="E-mail">E-mail</option>
+                  </select>
                 </div>
 
                 <div className="form-grupo" style={{ width: "320px" }}>
-                  <label>E-mail</label>
-                  <input type="email" />
+                  <label>Valor</label>
+                  <input
+                    type="text"
+                    name="valor"
+                    value={novoContato.valor}
+                    onChange={handleContatoChange}
+                    placeholder={
+                      novoContato.tipo === "Telefone"
+                        ? "(00) 00000-0000"
+                        : "cliente@email.com"
+                    }
+                  />
+                </div>
+
+                <div className="form-grupo" style={{ width: "420px" }}>
+                  <label>Descrição / Observação</label>
+                  <input
+                    type="text"
+                    name="descricao"
+                    value={novoContato.descricao}
+                    onChange={handleContatoChange}
+                    placeholder="Ex.: WhatsApp, Trabalho, Principal..."
+                  />
+                </div>
+
+                <div className="form-grupo" style={{ alignSelf: "end" }}>
+                  <button
+                    type="button"
+                    onClick={adicionarContato}
+                    style={{
+                      padding: "13px 22px",
+                      borderRadius: "9px",
+                      border: "none",
+                      backgroundColor: "#c97b1d",
+                      color: "#fff",
+                      cursor: "pointer",
+                      fontWeight: "700",
+                      fontSize: "15px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}
+                  >
+                    <FaPlus />
+                    Adicionar
+                  </button>
                 </div>
               </div>
-            </>)}
-          {abaAtiva === "ficha" && idCliente && (<>
+
+              <hr style={{ margin: "24px 0", border: "none", borderTop: "1px solid #eee" }} />
+
+              <h3 style={{ marginBottom: "16px" }}>Contatos cadastrados</h3>
+
+              <table
+                style={{
+                  width: "100%",
+                  borderCollapse: "collapse",
+                  border: "1px solid #e5e5e5",
+                  borderRadius: "10px",
+                  overflow: "hidden",
+                }}
+              >
+                <thead>
+                  <tr style={{ backgroundColor: "#f7f7f7" }}>
+                    <th style={thContato}>Tipo</th>
+                    <th style={thContato}>Valor</th>
+                    <th style={thContato}>Descrição / Observação</th>
+                    <th style={thContato}>Data do cadastro</th>
+                    <th style={thContato}>Ações</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {contatos.length === 0 ? (
+                    <tr>
+                      <td colSpan="5" style={{ padding: "18px", textAlign: "center" }}>
+                        Nenhum contato cadastrado.
+                      </td>
+                    </tr>
+                  ) : (
+                    contatos.map((contato) => (
+                      <tr key={contato.id}>
+                        <td style={tdContato}>{contato.tipo}</td>
+                        <td style={tdContato}>{contato.valor}</td>
+                        <td style={tdContato}>{contato.descricao || "-"}</td>
+                        <td style={tdContato}>{formatarData(contato.dataCadastro)}</td>
+                        <td style={tdContato}>
+                          <button
+                            type="button"
+                            title="Editar"
+                            onClick={() => editarContato(contato)}
+                            style={botaoTabela}
+                          >
+                            <FaEdit />
+                          </button>
+
+                          <button
+                            type="button"
+                            title="Excluir"
+                            onClick={() => excluirContato(contato)}
+                            style={{
+                              ...botaoTabela,
+                              color: "red",
+                              borderColor: "#ffb3b3",
+                              marginLeft: "8px",
+                            }}
+                          >
+                            <FaTrash />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+
+              <p style={{ textAlign: "center", marginTop: "22px", color: "#666" }}>
+                Todos os contatos cadastrados serão utilizados para comunicação com o cliente.
+              </p>
+            </>
+          )}
+
+          {abaAtiva === "ficha" && (<>
             <div style={{ display: "flex", alignItems: "flex-start", gap: "60px" }}>
               <div>
                 {/* COLUNA ESQUERDA */}
@@ -439,6 +1224,8 @@ export default function Clientes() {
                           type="text"
                           style={{ width: "250px" }}
                           placeholder="Descreva..."
+                          value={anamnese.cirurgiaQual}
+                          onChange={(e) => alterarDetalheAnamnese("cirurgiaQual", e.target.value)}
                         />
                       </>
                     )}
@@ -465,6 +1252,8 @@ export default function Clientes() {
                           type="text"
                           style={{ width: "250px" }}
                           placeholder="Descreva..."
+                          value={anamnese.remedioQual}
+                          onChange={(e) => alterarDetalheAnamnese("remedioQual", e.target.value)}
                         />
                       </>
                     )}
@@ -491,6 +1280,8 @@ export default function Clientes() {
                           type="text"
                           style={{ width: "250px" }}
                           placeholder="Descreva..."
+                          value={anamnese.anticoncepcionalQual}
+                          onChange={(e) => alterarDetalheAnamnese("anticoncepcionalQual", e.target.value)}
                         />
                       </>
                     )}
@@ -517,6 +1308,8 @@ export default function Clientes() {
                           type="text"
                           style={{ width: "250px" }}
                           placeholder="Descreva..."
+                          value={anamnese.alergiaMedicamentoQual}
+                          onChange={(e) => alterarDetalheAnamnese("alergiaMedicamentoQual", e.target.value)}
                         />
                       </>
                     )}
@@ -543,6 +1336,8 @@ export default function Clientes() {
                           type="text"
                           style={{ width: "250px" }}
                           placeholder="Descreva..."
+                          value={anamnese.tratamentoQual}
+                          onChange={(e) => alterarDetalheAnamnese("tratamentoQual", e.target.value)}
                         />
                       </>
                     )}
@@ -569,6 +1364,8 @@ export default function Clientes() {
                           type="text"
                           style={{ width: "250px" }}
                           placeholder="Descreva..."
+                          value={anamnese.pressaoQual}
+                          onChange={(e) => alterarDetalheAnamnese("pressaoQual", e.target.value)}
                         />
                       </>
                     )}
@@ -595,6 +1392,8 @@ export default function Clientes() {
                           type="text"
                           style={{ width: "250px" }}
                           placeholder="Descreva..."
+                          value={anamnese.outroQual}
+                          onChange={(e) => alterarDetalheAnamnese("outroQual", e.target.value)}
                         />
                       </>
                     )}
@@ -602,8 +1401,13 @@ export default function Clientes() {
                   </div>
 
                 </div>
-                <button className="botao-acao" title="Imprimir">
-                  <FaPrint />
+                <button
+                  type="button"
+                  className="botao-acao"
+                  title="Salvar ficha médica"
+                  onClick={salvarFichaMedica}
+                >
+                  <FaSave />
                 </button>
               </div>
 
@@ -708,24 +1512,12 @@ export default function Clientes() {
                   </select>
                 </div>
               </div>
+
             </div>
 
           </>)}
 
-          <div className="barra-acoes">
-            <button className="botao-acao" title="Novo">
-              <FaPlus />
-            </button>
 
-            <button className="botao-acao" title="Salvar" onClick={salvarCliente}>
-              <FaSave />
-            </button>
-
-            <button className="botao-acao botao-inativar" title="Inativar">
-              <FaBan />
-            </button>
-
-          </div>
         </div>
       </div>
     </div>
@@ -748,4 +1540,24 @@ const estiloAbaAtiva = {
   backgroundColor: "#c97b1d",
   color: "#fff",
   border: "1px solid #c97b1d",
+};
+
+const thContato = {
+  padding: "12px",
+  textAlign: "left",
+  borderBottom: "1px solid #ddd",
+  fontWeight: "700",
+};
+
+const tdContato = {
+  padding: "12px",
+  borderBottom: "1px solid #eee",
+};
+
+const botaoTabela = {
+  padding: "8px 10px",
+  borderRadius: "8px",
+  border: "1px solid #ccc",
+  backgroundColor: "#fff",
+  cursor: "pointer",
 };

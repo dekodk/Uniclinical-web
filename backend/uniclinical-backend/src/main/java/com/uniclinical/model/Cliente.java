@@ -2,6 +2,7 @@ package com.uniclinical.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "cliente")
@@ -24,7 +25,10 @@ public class Cliente {
     private String rgCliente;
 
     @Column(name = "dtnCliente")
-    private String dtnCliente;
+    private LocalDate dtnCliente;
+    
+    @Column (name = "sexoCliente")
+    private String sexoCliente;
 
     @Column(name = "ativo")
     private Boolean ativo;
@@ -61,13 +65,23 @@ public class Cliente {
         this.rgCliente = rgCliente;
     }
 
-    public String getDtnCliente() {
+    public LocalDate getDtnCliente() {
         return dtnCliente;
     }
 
-    public void setDtnCliente(String dtnCliente) {
+    public void setDtnCliente(LocalDate dtnCliente) {
         this.dtnCliente = dtnCliente;
     }
+
+    public String getSexoCliente() {
+        return sexoCliente;
+    }
+
+    public void setSexoCliente(String sexoCliente) {
+        this.sexoCliente = sexoCliente;
+    }
+    
+    
 
     public Boolean getAtivo() {
         return ativo;
