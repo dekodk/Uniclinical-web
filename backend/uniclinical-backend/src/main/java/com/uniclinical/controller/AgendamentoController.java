@@ -3,6 +3,7 @@ package com.uniclinical.controller;
 import com.uniclinical.model.Agendamento;
 import com.uniclinical.repository.AgendamentoRepository;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +31,18 @@ public class AgendamentoController {
 
     @PostMapping
     public Agendamento salvar(@RequestBody Agendamento agendamento) {
+        if (agendamento.getSituacao() == null) {
+            agendamento.setSituacao(true);
+        }
+
+        return repository.save(agendamento);
+    }
+
+    @PutMapping("/{id}")
+    public Agendamento atualizar(@PathVariable Integer id, @RequestBody Agendamento agendamento) {
+        agendamento.setIdAgendamento(id);
+        agendamento.setUltimaAtt(LocalDateTime.now());
+
         if (agendamento.getSituacao() == null) {
             agendamento.setSituacao(true);
         }

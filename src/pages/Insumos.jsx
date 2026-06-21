@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./Cadastros.css";
-import { FaPlus, FaSave, FaBan } from "react-icons/fa";
+import { FaSave, FaBan } from "react-icons/fa";
 
 export default function Insumos() {
   const [idInsumo, setIdInsumo] = useState("");
@@ -9,7 +9,7 @@ export default function Insumos() {
   const [busca, setBusca] = useState("");
 
   useEffect(() => {
-    listarInsumos();
+    setInsumos([]);
   }, []);
 
   async function listarInsumos() {
@@ -69,7 +69,7 @@ export default function Insumos() {
     const texto = (valor ?? "").trim();
 
     if (texto.length === 0) {
-      await listarInsumos();
+      setInsumos([]);
       return;
     }
 
@@ -143,10 +143,6 @@ export default function Insumos() {
           </div>
 
           <div className="barra-acoes">
-            <button className="botao-acao" title="Novo" onClick={novo}>
-              <FaPlus />
-            </button>
-
             <button className="botao-acao" title="Salvar" onClick={salvar}>
               <FaSave />
             </button>

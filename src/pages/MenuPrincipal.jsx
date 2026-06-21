@@ -10,17 +10,33 @@ import Agenda from "./Agenda";
 
 export default function MenuPrincipal({ onLogout, usuarioLogado }) {
   const [telaAtiva, setTelaAtiva] = useState("home");
+  const [agendamentoSelecionado, setAgendamentoSelecionado] = useState(null);
 
+  function navegarTela(tela) {
+    if (tela === "agendamento") {
+      setAgendamentoSelecionado(null);
+    }
+    setTelaAtiva(tela);
+  }
 
+  function handleEditarAgendamento(agendamento) {
+    setAgendamentoSelecionado(agendamento);
+    setTelaAtiva("agendamento");
+  }
 
   function renderizarConteudo() {
 
     if (telaAtiva === "agenda") {
-      return <Agenda />;
+      return <Agenda onEditAgendamento={handleEditarAgendamento} />;
     }
 
     if (telaAtiva === "agendamento") {
-      return <Agendamento />;
+      return (
+        <Agendamento
+          agendamentoSelecionado={agendamentoSelecionado}
+          onSaveComplete={() => setAgendamentoSelecionado(null)}
+        />
+      );
     }
 
     if (telaAtiva === "clientes") {
@@ -45,7 +61,7 @@ export default function MenuPrincipal({ onLogout, usuarioLogado }) {
   return (
     <div className="menu-principal-layout">
       <Sidebar
-        setTelaAtiva={setTelaAtiva}
+        setTelaAtiva={navegarTela}
         onLogout={onLogout}
         usuarioLogado={usuarioLogado}
       />

@@ -151,6 +151,96 @@
   background-color: #6b7280;
 }
 
+.botao-icone-busca {
+  width: 46px;
+  height: 46px;
+  border: 1px solid #d6d6d6;
+  border-radius: 12px;
+  background-color: #ffffff;
+  color: #444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.botao-icone-busca:hover {
+  background-color: #f7f7f7;
+  border-color: #c97b1d;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 2000;
+}
+
+.modal-conteudo {
+  width: min(100%, 520px);
+  background-color: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.15);
+  padding: 24px;
+}
+
+.modal-cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.botao-fechar-modal {
+  border: none;
+  background: transparent;
+  color: #444;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.tabela-busca {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.tabela-busca table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabela-busca th,
+.tabela-busca td {
+  text-align: left;
+  padding: 12px 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.tabela-busca tr:hover {
+  background-color: #fcf7eb;
+}
+
+.botao-selecionar-modal {
+  border: none;
+  background-color: #c97b1d;
+  color: #ffffff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.botao-selecionar-modal:hover {
+  background-color: #a86f15;
+}
+
 .botao-inativar:hover {
   background-color: #4b5563;
 }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./Cadastros.css";
 
-export default function Agenda() {
+export default function Agenda({ onEditAgendamento }) {
   const hoje = new Date().toISOString().split("T")[0];
 
   const [dataFiltro, setDataFiltro] = useState(hoje);
@@ -211,19 +211,43 @@ export default function Agenda() {
 
                     </div>
 
-                    {ag.observacao && (
-                      <div
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        marginTop: "16px",
+                        gap: "12px",
+                      }}
+                    >
+                      {ag.observacao && (
+                        <div
+                          style={{
+                            fontSize: "14px",
+                            color: "#555",
+                          }}
+                        >
+                          <strong>Observação:</strong> {ag.observacao}
+                        </div>
+                      )}
+
+                      <button
+                        type="button"
+                        onClick={() => onEditAgendamento?.(ag)}
                         style={{
-                          marginTop: "12px",
-                          paddingTop: "10px",
-                          borderTop: "1px solid #f0f0f0",
-                          fontSize: "14px",
-                          color: "#555",
+                          marginLeft: "auto",
+                          padding: "10px 16px",
+                          borderRadius: "8px",
+                          border: "1px solid #c97b1d",
+                          backgroundColor: "#fff",
+                          color: "#c97b1d",
+                          cursor: "pointer",
+                          fontWeight: "700",
                         }}
                       >
-                        <strong>Observação:</strong> {ag.observacao}
-                      </div>
-                    )}
+                        Editar
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}

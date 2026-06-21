@@ -3,6 +3,7 @@ package com.uniclinical.model;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "agendamento")
@@ -12,6 +13,9 @@ public class Agendamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idAgendamento")
     private Integer idAgendamento;
+
+    @Column(name = "idCliente")
+    private Integer idCliente;
 
     @Column(name = "nomeCliente")
     private String nomeCliente;
@@ -46,6 +50,9 @@ public class Agendamento {
     @Column(name = "consultorio")
     private String consultorio;
 
+    @Column(name = "ultimaAtt")
+    private LocalDateTime ultimaAtt;
+
     @Column(name = "dataAgendamento")
     private LocalDate dataAgendamento;
 
@@ -55,6 +62,14 @@ public class Agendamento {
 
     public void setIdAgendamento(Integer idAgendamento) {
         this.idAgendamento = idAgendamento;
+    }
+
+    public Integer getIdCliente() {
+        return idCliente;
+    }
+
+    public void setIdCliente(Integer idCliente) {
+        this.idCliente = idCliente;
     }
 
     public String getNomeCliente() {
@@ -143,6 +158,14 @@ public class Agendamento {
 
     public void setConsultorio(String consultorio) {
         this.consultorio = consultorio;
+    }
+
+    public LocalDateTime getUltimaAtt() {
+        return ultimaAtt;
+    }
+
+    public void setUltimaAtt(LocalDateTime ultimaAtt) {
+        this.ultimaAtt = ultimaAtt;
     }
 
     public LocalDate getDataAgendamento() {

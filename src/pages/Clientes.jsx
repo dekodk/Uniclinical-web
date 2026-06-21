@@ -116,6 +116,11 @@ export default function Clientes() {
     console.log("ENTROU NO salvarCliente");
     const token = localStorage.getItem("token");
 
+    if (!token) {
+      alert("Token não encontrado. Faça login novamente.");
+      return;
+    }
+
     if (!nomeCliente || nomeCliente.trim() === "") {
       alert("Informe o nome do cliente.");
       return;
@@ -141,7 +146,7 @@ export default function Clientes() {
         nomeCliente,
         cpfCliente,
         rgCliente,
-        dtnCliente,
+        dtnCliente: dtnCliente || null,
         sexoCliente,
         ativo: true,
       }),
@@ -154,9 +159,16 @@ export default function Clientes() {
       setIdCliente(clienteSalvo.idCliente);
 
       alert("Cliente salvo com sucesso!");
-      listarClientes();
+      const textoBusca = (busca ?? "").trim();
+      if (textoBusca) {
+        buscarClientes(textoBusca);
+      } else {
+        setLista([]);
+      }
     } else {
-      alert("Erro ao salvar cliente.");
+      const erro = await response.text();
+      console.error("Erro ao salvar cliente:", response.status, erro);
+      alert("Erro ao salvar cliente: " + (erro || response.statusText));
     }
   }
 
@@ -799,52 +811,56 @@ export default function Clientes() {
             </button>
           </div>
 
-          <div className="form-linha" style={{ marginBottom: "20px" }}>
-            <div className="form-grupo nome">
-              <label>Buscar cliente</label>
-              <input
-                type="text"
-                value={busca}
-                onChange={(e) => {
-                  const valor = e.target.value;
-                  setBusca(valor);
-                  buscarClientes(valor);
-                }}
-                placeholder="Digite o nome do cliente"
-              />
-            </div>
-          </div>
+          {abaAtiva === "dados" && (
+            <>
+              <div className="form-linha" style={{ marginBottom: "20px" }}>
+                <div className="form-grupo nome">
+                  <label>Buscar cliente</label>
+                  <input
+                    type="text"
+                    value={busca}
+                    onChange={(e) => {
+                      const valor = e.target.value;
+                      setBusca(valor);
+                      buscarClientes(valor);
+                    }}
+                    placeholder="Digite o nome do cliente"
+                  />
+                </div>
+              </div>
 
-          {lista.length > 0 && (
-            <div style={{ marginBottom: "24px" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                <thead>
-                  <tr>
-                    <th style={{ textAlign: "left" }}>Código</th>
-                    <th style={{ textAlign: "left" }}>Nome</th>
-                    <th style={{ textAlign: "left" }}>CPF</th>
-                  </tr>
-                </thead>
+              {lista.length > 0 && (
+                <div style={{ marginBottom: "24px" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                    <thead>
+                      <tr>
+                        <th style={{ textAlign: "left" }}>Código</th>
+                        <th style={{ textAlign: "left" }}>Nome</th>
+                        <th style={{ textAlign: "left" }}>CPF</th>
+                      </tr>
+                    </thead>
 
-                <tbody>
-                  {lista.map((cliente) => (
-                    <tr
-                      key={cliente.idCliente}
-                      onClick={() => {
-                        selecionar(cliente);
-                        setLista([]);
-                        setBusca(cliente.nomeCliente);
-                      }}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <td>{cliente.idCliente}</td>
-                      <td>{cliente.nomeCliente}</td>
-                      <td>{cliente.cpfCliente}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                    <tbody>
+                      {lista.map((cliente) => (
+                        <tr
+                          key={cliente.idCliente}
+                          onClick={() => {
+                            selecionar(cliente);
+                            setLista([]);
+                            setBusca(cliente.nomeCliente);
+                          }}
+                          style={{ cursor: "pointer" }}
+                        >
+                          <td>{cliente.idCliente}</td>
+                          <td>{cliente.nomeCliente}</td>
+                          <td>{cliente.cpfCliente}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </>
           )}
 
           {abaAtiva !== "dados" && !idCliente && (
@@ -915,10 +931,6 @@ export default function Clientes() {
                 </div>
               </div>
               <div style={{ marginTop: "24px" }}>
-                <button type="button" style={estiloBotaoAcao} title="Novo">
-                  <FaPlus />
-                </button>
-
                 <button type="button" style={estiloBotaoAcao} title="Salvar dados básicos" onClick={salvarCliente}>
                   <FaSave />
                 </button>

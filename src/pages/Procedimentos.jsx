@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./Cadastros.css";
-import { FaPlus, FaSave, FaBan } from "react-icons/fa";
+import { FaSave, FaBan } from "react-icons/fa";
 
 export default function Procedimentos() {
   const [idProcedimento, setIdProcedimento] = useState("");
@@ -10,7 +10,7 @@ export default function Procedimentos() {
   const [lista, setLista] = useState([]);
 
   useEffect(() => {
-    listar();
+    setLista([]);
   }, []);
 
   function formatarValorDigitacao(valorDigitado) {
@@ -131,7 +131,7 @@ export default function Procedimentos() {
     const texto = (valorBusca ?? "").trim();
 
     if (texto === "") {
-      listar();
+      setLista([]);
       return;
     }
 
@@ -189,10 +189,6 @@ export default function Procedimentos() {
           </div>
 
           <div className="barra-acoes">
-            <button className="botao-acao" title="Novo" onClick={novo}>
-              <FaPlus />
-            </button>
-
             <button className="botao-acao" title="Salvar" onClick={salvar}>
               <FaSave />
             </button>

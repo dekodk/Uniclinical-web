@@ -1,6 +1,6 @@
 import "./cadastros.css";
 import { useEffect, useState } from "react";
-import { FaPlus, FaSave, FaBan } from "react-icons/fa";
+import { FaSave, FaBan } from "react-icons/fa";
 
 export default function Colaboradores() {
   const [idUser, setIdUser] = useState("");
@@ -12,7 +12,7 @@ export default function Colaboradores() {
   const [lista, setLista] = useState([]);
 
   useEffect(() => {
-    listar();
+    setLista([]);
   }, []);
 
   function novo() {
@@ -125,7 +125,7 @@ export default function Colaboradores() {
     const texto = (valorBusca ?? "").trim();
 
     if (texto === "") {
-      listar();
+      setLista([]);
       return;
     }
 
@@ -254,10 +254,6 @@ export default function Colaboradores() {
           </div>
 
           <div className="barra-acoes">
-            <button className="botao-acao" title="Novo" onClick={novo}>
-              <FaPlus />
-            </button>
-
             <button className="botao-acao" title="Salvar" onClick={salvar}>
               <FaSave />
             </button>
@@ -283,37 +279,39 @@ export default function Colaboradores() {
             </div>
           </div>
 
-          <div style={{ marginTop: "25px" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
-              <thead>
-                <tr>
-                  <th style={{ textAlign: "left" }}>Código</th>
-                  <th style={{ textAlign: "left" }}>Nome</th>
-                  <th style={{ textAlign: "left" }}>Login</th>
-                  <th style={{ textAlign: "left" }}>Nível</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {lista.map((colaborador) => (
-                  <tr
-                    key={colaborador.idUser}
-                    onClick={() => selecionar(colaborador)}
-                    style={{
-                      cursor: "pointer",
-                      backgroundColor:
-                        colaborador.idUser === idUser ? "#fff7ec" : "",
-                    }}
-                  >
-                    <td>{colaborador.idUser}</td>
-                    <td>{colaborador.nomeUser}</td>
-                    <td>{colaborador.idLogin}</td>
-                    <td>{colaborador.nivel}</td>
+          {lista.length > 0 && (
+            <div style={{ marginTop: "25px" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                <thead>
+                  <tr>
+                    <th style={{ textAlign: "left" }}>Código</th>
+                    <th style={{ textAlign: "left" }}>Nome</th>
+                    <th style={{ textAlign: "left" }}>Login</th>
+                    <th style={{ textAlign: "left" }}>Nível</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+
+                <tbody>
+                  {lista.map((colaborador) => (
+                    <tr
+                      key={colaborador.idUser}
+                      onClick={() => selecionar(colaborador)}
+                      style={{
+                        cursor: "pointer",
+                        backgroundColor:
+                          colaborador.idUser === idUser ? "#fff7ec" : "",
+                      }}
+                    >
+                      <td>{colaborador.idUser}</td>
+                      <td>{colaborador.nomeUser}</td>
+                      <td>{colaborador.idLogin}</td>
+                      <td>{colaborador.nivel}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
 
         </div>
       </div>

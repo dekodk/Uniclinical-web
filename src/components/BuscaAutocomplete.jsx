@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function BuscaAutocomplete({
   label,
@@ -12,14 +12,28 @@ export default function BuscaAutocomplete({
   const [texto, setTexto] = useState(valorSelecionado);
   const [mostrarLista, setMostrarLista] = useState(false);
 
-  const listaFiltrada = lista.filter((item) =>
-    item[campoBusca]
-      ?.toLowerCase()
-      .includes(texto.toLowerCase())
-  );
+  useEffect(() => {
+    setTexto(valorSelecionado);
+  }, [valorSelecionado]);
+
+  const getItemValue = (item) => {
+    return (
+      item[campoBusca] ??
+      item.nome ??
+      item.nomeCliente ??
+      item.campoBusca ??
+      ""
+    );
+  };
+
+  const listaFiltrada = lista.filter((item) => {
+    const valor = String(getItemValue(item) ?? "");
+    return valor.toLowerCase().includes(texto.toLowerCase());
+  });
 
   function selecionarItem(item) {
-    setTexto(item[campoBusca]);
+    const valor = getItemValue(item);
+    setTexto(valor);
     setMostrarLista(false);
     onSelect(item);
   }
@@ -58,9 +72,9 @@ export default function BuscaAutocomplete({
           }}
         >
           {listaFiltrada.length > 0 ? (
-            listaFiltrada.map((item) => (
+            listaFiltrada.map((item, index) => (
               <div
-                key={item.id}
+                key={item.id ?? item.idCliente ?? item.codigo ?? index}
                 onClick={() => selecionarItem(item)}
                 style={{
                   padding: "10px",
@@ -68,7 +82,7 @@ export default function BuscaAutocomplete({
                   borderBottom: "1px solid #eee",
                 }}
               >
-                {item[campoBusca]}
+                {getItemValue(item)}
               </div>
             ))
           ) : (
