@@ -4,6 +4,8 @@ import com.uniclinical.model.Colaborador;
 import com.uniclinical.repository.ColaboradorRepository;
 import com.uniclinical.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -16,15 +18,15 @@ public class LoginController {
     private ColaboradorRepository repository;
 
     @PostMapping
-    public String login(@RequestBody Colaborador colaborador) {
+    public ResponseEntity<String> login(@RequestBody Colaborador colaborador) {
 
         Colaborador user = repository.findByIdLogin(colaborador.getIdLogin());
 
         if (user != null && encoder.matches(colaborador.getIdSenha(), user.getIdSenha())) {
             String token = JwtUtil.gerarToken(user.getIdLogin(), user.getNivel());
-            return token;
+            return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body(token);
         } else {
-            return "ERRO";
+            return ResponseEntity.badRequest().contentType(MediaType.TEXT_PLAIN).body("ERRO");
         }
     }
 

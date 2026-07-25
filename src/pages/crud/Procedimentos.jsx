@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "./Cadastros.css";
+import "../Cadastros.css";
 import { FaSave, FaBan } from "react-icons/fa";
 
 export default function Procedimentos() {

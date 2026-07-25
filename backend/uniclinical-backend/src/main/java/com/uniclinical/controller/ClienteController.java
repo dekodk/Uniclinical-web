@@ -19,12 +19,12 @@ public class ClienteController {
 
     @GetMapping
     public List<Cliente> listar() {
-        return repository.findByAtivoTrue();
+        return repository.findByAtivoTrueOrderByNomeClienteAsc();
     }
 
     @GetMapping("/buscar")
     public List<Cliente> buscar(@RequestParam String nome) {
-        return repository.findByNomeClienteContainingIgnoreCaseAndAtivoTrue(nome);
+        return repository.findByNomeClienteContainingIgnoreCaseAndAtivoTrueOrderByNomeClienteAsc(nome);
     }
 
     @PostMapping

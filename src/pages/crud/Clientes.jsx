@@ -1,5 +1,5 @@
-import "./cadastros.css";
-import { FaPlus, FaSave, FaBan, FaTrash, FaEdit } from "react-icons/fa";
+import "../cadastros.css";
+import { FaPlus, FaSave, FaBan, FaTrash, FaEdit, FaPrint } from "react-icons/fa";
 import { useState } from "react";
 
 const ANAMNESE_INICIAL = {
@@ -567,6 +567,38 @@ export default function Clientes() {
     }
   }
 
+  async function imprimirFichaMedica() {
+    if (!idCliente) {
+      alert("Selecione ou salve um cliente antes de imprimir a ficha médica.");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    try {
+      const response = await fetch(
+        `http://localhost:8080/relatorios/fichamedica/pdf?id_param=${encodeURIComponent(
+          idCliente
+        )}&token=${encodeURIComponent(token)}`,
+        {
+          headers: {
+            Accept: "application/pdf",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Não foi possível gerar a ficha médica para impressão.");
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank");
+    } catch (error) {
+      console.error("Erro ao imprimir ficha médica:", error);
+      alert("Erro ao imprimir a ficha médica.");
+    }
+  }
+
   const estiloBotaoAcao = {
     width: "46px",
     height: "46px",
@@ -580,7 +612,7 @@ export default function Clientes() {
     alignItems: "center",
     justifyContent: "center",
     marginRight: "10px",
-  };
+  };  
 
   const estiloBotaoInativar = {
     ...estiloBotaoAcao,
@@ -1413,14 +1445,29 @@ export default function Clientes() {
                   </div>
 
                 </div>
-                <button
-                  type="button"
-                  className="botao-acao"
-                  title="Salvar ficha médica"
-                  onClick={salvarFichaMedica}
-                >
-                  <FaSave />
-                </button>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <button
+                    type="button"
+                    className="botao-acao"
+                    title="Salvar ficha médica"
+                    onClick={salvarFichaMedica}
+                  >
+                    <FaSave />
+                  </button>
+                  <button
+                    type="button"
+                    className="botao-acao"
+                    title="Imprimir ficha médica"
+                    onClick={imprimirFichaMedica}
+                    disabled={!idCliente}
+                    style={{
+                      opacity: idCliente ? 1 : 0.5,
+                      cursor: idCliente ? "pointer" : "not-allowed",
+                    }}
+                  >
+                    <FaPrint />
+                  </button>
+                </div>
               </div>
 
               <div>

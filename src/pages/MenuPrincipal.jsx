@@ -1,12 +1,16 @@
 import { useState } from "react";
 import Sidebar from "../components/Sidebar";
-import Clientes from "./Clientes";
-import Colaboradores from "./Coladoradores";
-import Insumos from "./Insumos";
-import Procedimentos from "./Procedimentos";
-import Agendamento from "./Agendamento";
-import Agenda from "./Agenda";
-
+import Clientes from "./crud/Clientes";
+import Colaboradores from "./crud/Coladoradores";
+import Insumos from "./crud/Insumos";
+import Procedimentos from "./crud/Procedimentos";
+import Agendamento from "./crud/Agendamento";
+import Agenda from "./crud/Agenda";
+import Rel1Cliente from "./relatorios/rel1cliente";
+import Rel1Colaboradores from "./relatorios/rel1colaboradores";
+import Rel1Insumos from "./relatorios/rel1insumos";
+import Rel1Procedimentos from "./relatorios/rel1procedimentos";
+import Rel1Aniversariantes from "./relatorios/rel1aniversariantes";
 
 export default function MenuPrincipal({ onLogout, usuarioLogado }) {
   const [telaAtiva, setTelaAtiva] = useState("home");
@@ -53,6 +57,26 @@ export default function MenuPrincipal({ onLogout, usuarioLogado }) {
 
     if (telaAtiva === "procedimentos") {
       return <Procedimentos />;
+    }
+
+    if (telaAtiva === "relatorio-clientes") {
+      return <Rel1Cliente onVoltar={() => setTelaAtiva("home")} />;
+    }
+
+    if (telaAtiva === "relatorio-colaboradores") {
+      return <Rel1Colaboradores onVoltar={() => setTelaAtiva("home")} />;
+    }
+
+    if (telaAtiva === "relatorio-insumos") {
+      return <Rel1Insumos onVoltar={() => setTelaAtiva("home")} />;
+    }
+
+    if (telaAtiva === "relatorio-procedimentos") {
+      return <Rel1Procedimentos onVoltar={() => setTelaAtiva("home")} />;
+    }
+
+    if (telaAtiva === "relatorio-aniversariantes") {
+      return <Rel1Aniversariantes onVoltar={() => setTelaAtiva("home")} />;
     }
 
     return <h1>Bem-vindo ao sistema da clínica</h1>;

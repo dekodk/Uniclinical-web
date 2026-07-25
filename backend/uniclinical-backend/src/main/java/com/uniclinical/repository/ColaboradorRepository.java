@@ -9,8 +9,8 @@ public interface ColaboradorRepository extends JpaRepository<Colaborador, Intege
 
     Colaborador findByIdLogin(String idLogin);
     
-    List<Colaborador> findByAtivoTrue();
+    List<Colaborador> findByAtivoTrueOrderByNomeUserAsc();
 
-    List<Colaborador> findByNomeUserContainingIgnoreCaseAndAtivoTrue(String nomeUser);
+    List<Colaborador> findByNomeUserContainingIgnoreCaseAndAtivoTrueOrderByNomeUserAsc(String nomeUser);
 
 }

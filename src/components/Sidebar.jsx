@@ -8,6 +8,7 @@ export default function Sidebar({ setTelaAtiva, onLogout, usuarioLogado }) {
   const [menuAtivo, setMenuAtivo] = useState("");
   const [cadastroAberto, setCadastroAberto] = useState(false);
   const [agendarAberto, setAgendarAberto] = useState(false);
+  const [relatoriosAberto, setRelatoriosAberto] = useState(false);
 
   function alternarSidebar() {
     setRecolhido(!recolhido);
@@ -19,12 +20,19 @@ export default function Sidebar({ setTelaAtiva, onLogout, usuarioLogado }) {
     if (nome === "Cadastrar") {
       setCadastroAberto(!cadastroAberto);
       setAgendarAberto(false);
+      setRelatoriosAberto(false);
     } else if (nome === "Agendar") {
       setAgendarAberto(!agendarAberto);
       setCadastroAberto(false);
+      setRelatoriosAberto(false);
+    } else if (nome === "Relatórios") {
+      setRelatoriosAberto(!relatoriosAberto);
+      setCadastroAberto(false);
+      setAgendarAberto(false);
     } else {
       setCadastroAberto(false);
       setAgendarAberto(false);
+      setRelatoriosAberto(false);
       setTelaAtiva(nome.toLowerCase());
     }
   }
@@ -142,8 +150,50 @@ export default function Sidebar({ setTelaAtiva, onLogout, usuarioLogado }) {
           onClick={() => clicarMenu("Relatórios")}
         >
           <span className="menu-icone">📊</span>
-          {!recolhido && <span className="menu-texto">Relatórios</span>}
+          {!recolhido && (
+            <>
+              <span className="menu-texto">Relatórios</span>
+              <span className="seta-submenu">
+                {relatoriosAberto ? "▲" : "▼"}
+              </span>
+            </>
+          )}
         </button>
+
+        {!recolhido && relatoriosAberto && (
+          <div className="submenu">
+            <button
+              className="submenu-item"
+              onClick={() => setTelaAtiva("relatorio-clientes")}
+            >
+              Lista de Clientes
+            </button>
+            <button
+              className="submenu-item"
+              onClick={() => setTelaAtiva("relatorio-colaboradores")}
+            >
+              Lista de Colaboradores
+            </button>
+            <button
+              className="submenu-item"
+              onClick={() => setTelaAtiva("relatorio-insumos")}
+            >
+              Lista de Insumos
+            </button>
+            <button
+              className="submenu-item"
+              onClick={() => setTelaAtiva("relatorio-procedimentos")}
+            >
+              Lista de Procedimentos
+            </button>
+            <button
+              className="submenu-item"
+              onClick={() => setTelaAtiva("relatorio-aniversariantes")}
+            >
+              Lista de Aniversariantes
+            </button>
+          </div>
+        )}
 
         <button
           className={`menu-item ${menuAtivo === "Sair" ? "ativo" : ""}`}

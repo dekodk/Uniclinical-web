@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "./Cadastros.css";
+import "../Cadastros.css";
 
 export default function Agenda({ onEditAgendamento }) {
   const hoje = new Date().toISOString().split("T")[0];

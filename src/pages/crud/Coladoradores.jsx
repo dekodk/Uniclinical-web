@@ -1,4 +1,4 @@
-import "./cadastros.css";
+import "../cadastros.css";
 import { useEffect, useState } from "react";
 import { FaSave, FaBan } from "react-icons/fa";
 

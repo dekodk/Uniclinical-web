@@ -19,7 +19,12 @@ export default function Login({ onLogin }) {
       })
     });
 
-    const token = await response.text();
+    let token = await response.text();
+    token = token?.trim();
+    if (token?.startsWith('"') && token?.endsWith('"')) {
+      token = token.slice(1, -1);
+    }
+    token = token?.replace(/\r|\n/g, "");
 
     // 🔥 se login falhar
     if (!response.ok || token === "ERRO" || !token) {

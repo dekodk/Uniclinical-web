@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
 
-    List<Cliente> findByAtivoTrue();
+    List<Cliente> findByAtivoTrueOrderByNomeClienteAsc();
 
-    List<Cliente> findByNomeClienteContainingIgnoreCaseAndAtivoTrue(String nomeCliente);
+    List<Cliente> findByNomeClienteContainingIgnoreCaseAndAtivoTrueOrderByNomeClienteAsc(String nomeCliente);
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "./Cadastros.css";
+import "../Cadastros.css";
 
 export default function Agendamento({ agendamentoSelecionado, onSaveComplete }) {
   const [procedimentos, setProcedimentos] = useState([]);

@@ -22,12 +22,12 @@ public class ColaboradorController {
 
     @GetMapping
     public List<Colaborador> listar() {
-        return repository.findByAtivoTrue();
+        return repository.findByAtivoTrueOrderByNomeUserAsc();
     }
 
     @GetMapping("/buscar")
     public List<Colaborador> buscar(@RequestParam String nome) {
-        return repository.findByNomeUserContainingIgnoreCaseAndAtivoTrue(nome);
+        return repository.findByNomeUserContainingIgnoreCaseAndAtivoTrueOrderByNomeUserAsc(nome);
     }
 
     @PostMapping

@@ -32,14 +32,33 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         String authorization = request.getHeader("Authorization");
+        System.out.println("[JwtFilter] path=" + path + " authorization=" + authorization);
 
-        if (authorization == null || !authorization.startsWith("Bearer ")) {
+        String token = null;
+        if (authorization != null && authorization.startsWith("Bearer ")) {
+            token = authorization.substring(7).trim();
+            if (token.startsWith("\"") && token.endsWith("\"")) {
+                token = token.substring(1, token.length() - 1);
+            }
+            token = token.replaceAll("\\r|\\n", "");
+        }
+
+        if ((token == null || token.isBlank()) && request.getParameter("token") != null) {
+            token = request.getParameter("token").trim();
+            if (token.startsWith("\"") && token.endsWith("\"")) {
+                token = token.substring(1, token.length() - 1);
+            }
+            token = token.replaceAll("\\r|\\n", "");
+            System.out.println("[JwtFilter] tokenFromParam=" + token);
+        }
+
+        if (token == null || token.isBlank()) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Token nao informado");
             return;
         }
 
-        String token = authorization.substring(7);
+        System.out.println("[JwtFilter] sanitizedToken=" + token);
 
         try {
             Claims claims = JwtUtil.validarToken(token);
@@ -60,6 +79,7 @@ public class JwtFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
 
         } catch (Exception e) {
+            System.out.println("[JwtFilter] token validation failed: " + e.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Token invalido ou expirado");
         }
