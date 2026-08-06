@@ -8,6 +8,7 @@ export default function Sidebar({ setTelaAtiva, onLogout, usuarioLogado }) {
   const [menuAtivo, setMenuAtivo] = useState("");
   const [cadastroAberto, setCadastroAberto] = useState(false);
   const [agendarAberto, setAgendarAberto] = useState(false);
+  const [financeiroAberto, setFinanceiroAberto] = useState(false);
   const [relatoriosAberto, setRelatoriosAberto] = useState(false);
 
   function alternarSidebar() {
@@ -20,18 +21,27 @@ export default function Sidebar({ setTelaAtiva, onLogout, usuarioLogado }) {
     if (nome === "Cadastrar") {
       setCadastroAberto(!cadastroAberto);
       setAgendarAberto(false);
+      setFinanceiroAberto(false);
       setRelatoriosAberto(false);
     } else if (nome === "Agendar") {
       setAgendarAberto(!agendarAberto);
       setCadastroAberto(false);
+      setFinanceiroAberto(false);
+      setRelatoriosAberto(false);
+    } else if (nome === "Financeiro") {
+      setFinanceiroAberto(!financeiroAberto);
+      setCadastroAberto(false);
+      setAgendarAberto(false);
       setRelatoriosAberto(false);
     } else if (nome === "Relatórios") {
       setRelatoriosAberto(!relatoriosAberto);
       setCadastroAberto(false);
       setAgendarAberto(false);
+      setFinanceiroAberto(false);
     } else {
       setCadastroAberto(false);
       setAgendarAberto(false);
+      setFinanceiroAberto(false);
       setRelatoriosAberto(false);
       setTelaAtiva(nome.toLowerCase());
     }
@@ -142,8 +152,33 @@ export default function Sidebar({ setTelaAtiva, onLogout, usuarioLogado }) {
           onClick={() => clicarMenu("Financeiro")}
         >
           <span className="menu-icone">💰</span>
-          {!recolhido && <span className="menu-texto">Financeiro</span>}
+          {!recolhido && (
+            <>
+              <span className="menu-texto">Financeiro</span>
+              <span className="seta-submenu">
+                {financeiroAberto ? "▲" : "▼"}
+              </span>
+            </>
+          )}
         </button>
+
+        {!recolhido && financeiroAberto && (
+          <div className="submenu">
+            <button
+              className="submenu-item"
+              onClick={() => setTelaAtiva("contas-a-pagar")}
+            >
+              Contas a Pagar
+            </button>
+
+            <button
+              className="submenu-item"
+              onClick={() => setTelaAtiva("contas-a-receber")}
+            >
+              Contas a Receber
+            </button>
+          </div>
+        )}
 
         <button
           className={`menu-item ${menuAtivo === "Relatórios" ? "ativo" : ""}`}

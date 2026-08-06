@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import "../Cadastros.css";
 
-export default function Agendamento({ agendamentoSelecionado, onSaveComplete }) {
-  const [procedimentos, setProcedimentos] = useState([]);
-  const [insumos, setInsumos] = useState([]);
-  const [colaboradores, setColaboradores] = useState([]);
+export default function Agendamento({ agendamentoSelecionado, onSaveComplete, onVoltar }) {
   const [clientePesquisa, setClientePesquisa] = useState("");
   const [clienteResultados, setClienteResultados] = useState([]);
   const [mostrarListaCliente, setMostrarListaCliente] = useState(false);
@@ -73,12 +70,6 @@ export default function Agendamento({ agendamentoSelecionado, onSaveComplete }) 
   }
 
   useEffect(() => {
-    carregarProcedimentos();
-    carregarInsumos();
-    carregarColaboradores();
-  }, []);
-
-  useEffect(() => {
     if (!agendamentoSelecionado) {
       resetForm();
       return;
@@ -145,54 +136,101 @@ export default function Agendamento({ agendamentoSelecionado, onSaveComplete }) 
     }
   }
 
-  async function carregarProcedimentos() {
+  async function buscarProcedimentos(valor) {
     const token = localStorage.getItem("token");
+    const texto = valor.trim();
+
+    if (!texto) {
+      setProcResultados([]);
+      return;
+    }
 
     try {
-      const response = await fetch("http://localhost:8080/procedimentos", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await response.json();
-      setProcedimentos(data);
+      const response = await fetch(
+        `http://localhost:8080/procedimentos/buscar?nome=${encodeURIComponent(texto)}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        setProcResultados(Array.isArray(data) ? data : []);
+      } else {
+        console.error("Erro ao buscar procedimentos:", response.status);
+        setProcResultados([]);
+      }
     } catch (error) {
-      console.error("Erro ao carregar procedimentos:", error);
+      console.error("Erro ao buscar procedimentos:", error);
+      setProcResultados([]);
     }
   }
 
-  async function carregarInsumos() {
+  async function buscarColaboradores(valor) {
     const token = localStorage.getItem("token");
+    const texto = valor.trim();
+
+    if (!texto) {
+      setColabResultados([]);
+      return;
+    }
 
     try {
-      const response = await fetch("http://localhost:8080/insumos", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await response.json();
-      setInsumos(data);
+      const response = await fetch(
+        `http://localhost:8080/colaboradores/buscar?nome=${encodeURIComponent(texto)}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        setColabResultados(Array.isArray(data) ? data : []);
+      } else {
+        console.error("Erro ao buscar colaboradores:", response.status);
+        setColabResultados([]);
+      }
     } catch (error) {
-      console.error("Erro ao carregar insumos:", error);
+      console.error("Erro ao buscar colaboradores:", error);
+      setColabResultados([]);
     }
   }
 
-  async function carregarColaboradores() {
+  async function buscarInsumos(valor) {
     const token = localStorage.getItem("token");
+    const texto = valor.trim();
+
+    if (!texto) {
+      setInsumoResultados([]);
+      return;
+    }
 
     try {
-      const response = await fetch("http://localhost:8080/colaboradores", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await response.json();
-      setColaboradores(data);
+      const response = await fetch(
+        `http://localhost:8080/insumos/buscar?nome=${encodeURIComponent(texto)}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        setInsumoResultados(Array.isArray(data) ? data : []);
+      } else {
+        console.error("Erro ao buscar insumos:", response.status);
+        setInsumoResultados([]);
+      }
     } catch (error) {
-      console.error("Erro ao carregar colaboradores:", error);
+      console.error("Erro ao buscar insumos:", error);
+      setInsumoResultados([]);
     }
   }
-
 
   async function salvarAgendamento() {
     const token = localStorage.getItem("token");
@@ -319,8 +357,16 @@ export default function Agendamento({ agendamentoSelecionado, onSaveComplete }) 
 
   return (
     <div className="cadastros-page">
-      <div className="cadastros-topo">
+      <div className="cadastros-topo" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <h1>Agendamento</h1>
+        <button
+          type="button"
+          className="botao-acao"
+          style={{ minWidth: "120px", width: "auto", height: "42px", fontSize: "14px" }}
+          onClick={onVoltar}
+        >
+          VOLTAR
+        </button>
       </div>
 
       <div className="cadastros-conteudo">
@@ -369,12 +415,15 @@ export default function Agendamento({ agendamentoSelecionado, onSaveComplete }) 
                       <div
                         key={cliente.idCliente ?? cliente.id}
                         onMouseDown={() => {
+                          const clienteId = cliente.idCliente ?? cliente.id ?? "";
+                          const clienteNome = cliente.nomeCliente ?? cliente.nome ?? "";
+
                           setForm((prev) => ({
                             ...prev,
-                            clienteId: cliente.idCliente ?? cliente.id,
-                            clienteNome: cliente.nomeCliente ?? cliente.nome,
+                            clienteId,
+                            clienteNome,
                           }));
-                          setClientePesquisa(cliente.nomeCliente ?? cliente.nome ?? "");
+                          setClientePesquisa(clienteNome);
                           setClienteResultados([]);
                           setMostrarListaCliente(false);
                         }}
@@ -384,7 +433,7 @@ export default function Agendamento({ agendamentoSelecionado, onSaveComplete }) 
                           borderBottom: "1px solid #eee",
                         }}
                       >
-                        {cliente.nomeCliente ?? cliente.nome}
+                        {cliente.idCliente ?? cliente.id} - {cliente.nomeCliente ?? cliente.nome}
                       </div>
                     ))
                   ) : (
@@ -442,16 +491,14 @@ export default function Agendamento({ agendamentoSelecionado, onSaveComplete }) 
                     const valor = e.target.value;
                     setProcPesquisa(valor);
                     setMostrarListaProc(true);
-                    const resultados = valor.trim()
-                      ? procedimentos.filter((item) =>
-                          (item.nomeProcedimento ?? item.nome ?? "")
-                            .toLowerCase()
-                            .includes(valor.toLowerCase())
-                        )
-                      : [];
-                    setProcResultados(resultados);
+                    buscarProcedimentos(valor);
                   }}
-                  onFocus={() => setMostrarListaProc(true)}
+                  onFocus={() => {
+                    setMostrarListaProc(true);
+                    if (procPesquisa) {
+                      buscarProcedimentos(procPesquisa);
+                    }
+                  }}
                   onBlur={() => setTimeout(() => setMostrarListaProc(false), 150)}
                 />
               </div>
@@ -474,15 +521,18 @@ export default function Agendamento({ agendamentoSelecionado, onSaveComplete }) 
                   {procResultados.length > 0 ? (
                     procResultados.map((proc) => (
                       <div
-                        key={proc.id}
+                        key={proc.idProcedimento ?? proc.id}
                         onMouseDown={() => {
+                          const procedimentoId = proc.idProcedimento ?? proc.id ?? "";
+                          const procedimentoNome = proc.nomeProcedimento ?? proc.nome ?? "";
+
                           setForm((prev) => ({
                             ...prev,
-                            procedimentoId: proc.id,
-                            procedimentoNome: proc.nomeProcedimento ?? proc.nome,
+                            procedimentoId,
+                            procedimentoNome,
                             valorProcedimento: formatarMoeda(proc.valorProcedimento ?? proc.valor ?? 0),
                           }));
-                          setProcPesquisa(proc.nomeProcedimento ?? proc.nome ?? "");
+                          setProcPesquisa(procedimentoNome);
                           setProcResultados([]);
                           setMostrarListaProc(false);
                         }}
@@ -493,7 +543,9 @@ export default function Agendamento({ agendamentoSelecionado, onSaveComplete }) 
                         }}
                       >
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                          <span>{proc.nomeProcedimento ?? proc.nome}</span>
+                          <span>
+                            {proc.idProcedimento ?? proc.id} - {proc.nomeProcedimento ?? proc.nome}
+                          </span>
                           {(proc.valorProcedimento != null || proc.valor != null) && (
                             <span style={{ color: "#666" }}>
                               {Number(proc.valorProcedimento ?? proc.valor).toLocaleString("pt-BR", {
@@ -561,16 +613,14 @@ export default function Agendamento({ agendamentoSelecionado, onSaveComplete }) 
                     const valor = e.target.value;
                     setColabPesquisa(valor);
                     setMostrarListaColab(true);
-                    const resultados = valor.trim()
-                      ? colaboradores.filter((item) =>
-                          (item.nomeUser ?? item.nome ?? "")
-                            .toLowerCase()
-                            .includes(valor.toLowerCase())
-                        )
-                      : [];
-                    setColabResultados(resultados);
+                    buscarColaboradores(valor);
                   }}
-                  onFocus={() => setMostrarListaColab(true)}
+                  onFocus={() => {
+                    setMostrarListaColab(true);
+                    if (colabPesquisa) {
+                      buscarColaboradores(colabPesquisa);
+                    }
+                  }}
                   onBlur={() => setTimeout(() => setMostrarListaColab(false), 150)}
                 />
               </div>
@@ -593,14 +643,17 @@ export default function Agendamento({ agendamentoSelecionado, onSaveComplete }) 
                   {colabResultados.length > 0 ? (
                     colabResultados.map((colaborador) => (
                       <div
-                        key={colaborador.id}
+                        key={colaborador.idUser ?? colaborador.id}
                         onMouseDown={() => {
+                          const colaboradorId = colaborador.idUser ?? colaborador.id ?? "";
+                          const colaboradorNome = colaborador.nomeUser ?? colaborador.nome ?? "";
+
                           setForm((prev) => ({
                             ...prev,
-                            colaboradorId: colaborador.id,
-                            colaboradorNome: colaborador.nomeUser ?? colaborador.nome,
+                            colaboradorId,
+                            colaboradorNome,
                           }));
-                          setColabPesquisa(colaborador.nomeUser ?? colaborador.nome ?? "");
+                          setColabPesquisa(colaboradorNome);
                           setColabResultados([]);
                           setMostrarListaColab(false);
                         }}
@@ -610,7 +663,7 @@ export default function Agendamento({ agendamentoSelecionado, onSaveComplete }) 
                           borderBottom: "1px solid #eee",
                         }}
                       >
-                        {colaborador.nomeUser ?? colaborador.nome}
+                        {colaborador.idUser ?? colaborador.id} - {colaborador.nomeUser ?? colaborador.nome}
                       </div>
                     ))
                   ) : (
@@ -631,16 +684,14 @@ export default function Agendamento({ agendamentoSelecionado, onSaveComplete }) 
                     const valor = e.target.value;
                     setInsumoPesquisa(valor);
                     setMostrarListaInsumo(true);
-                    const resultados = valor.trim()
-                      ? insumos.filter((item) =>
-                          (item.nomeInsumo ?? item.nome ?? "")
-                            .toLowerCase()
-                            .includes(valor.toLowerCase())
-                        )
-                      : [];
-                    setInsumoResultados(resultados);
+                    buscarInsumos(valor);
                   }}
-                  onFocus={() => setMostrarListaInsumo(true)}
+                  onFocus={() => {
+                    setMostrarListaInsumo(true);
+                    if (insumoPesquisa) {
+                      buscarInsumos(insumoPesquisa);
+                    }
+                  }}
                   onBlur={() => setTimeout(() => setMostrarListaInsumo(false), 150)}
                 />
               </div>
@@ -663,14 +714,17 @@ export default function Agendamento({ agendamentoSelecionado, onSaveComplete }) 
                   {insumoResultados.length > 0 ? (
                     insumoResultados.map((insumo) => (
                       <div
-                        key={insumo.id}
+                        key={insumo.idInsumo ?? insumo.id}
                         onMouseDown={() => {
+                          const insumoId = insumo.idInsumo ?? insumo.id ?? "";
+                          const insumoNome = insumo.nomeInsumo ?? insumo.nome ?? "";
+
                           setForm((prev) => ({
                             ...prev,
-                            insumoId: insumo.id,
-                            insumoNome: insumo.nomeInsumo ?? insumo.nome,
+                            insumoId,
+                            insumoNome,
                           }));
-                          setInsumoPesquisa(insumo.nomeInsumo ?? insumo.nome ?? "");
+                          setInsumoPesquisa(insumoNome);
                           setInsumoResultados([]);
                           setMostrarListaInsumo(false);
                         }}
@@ -680,7 +734,7 @@ export default function Agendamento({ agendamentoSelecionado, onSaveComplete }) 
                           borderBottom: "1px solid #eee",
                         }}
                       >
-                        {insumo.nomeInsumo ?? insumo.nome}
+                        {insumo.idInsumo ?? insumo.id} - {insumo.nomeInsumo ?? insumo.nome}
                       </div>
                     ))
                   ) : (

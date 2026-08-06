@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "../Cadastros.css";
 import { FaSave, FaBan } from "react-icons/fa";
 
-export default function Procedimentos() {
+export default function Procedimentos({ onVoltar }) {
   const [idProcedimento, setIdProcedimento] = useState("");
   const [nome, setNome] = useState("");
   const [valor, setValor] = useState("");
@@ -156,8 +156,16 @@ export default function Procedimentos() {
 
   return (
     <div className="cadastros-page">
-      <div className="cadastros-topo">
+      <div className="cadastros-topo" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <h1>Cadastro de Procedimentos</h1>
+        <button
+          type="button"
+          className="botao-acao"
+          style={{ minWidth: "120px", width: "auto", height: "42px", fontSize: "14px" }}
+          onClick={onVoltar}
+        >
+          VOLTAR
+        </button>
       </div>
 
       <div className="cadastros-conteudo">

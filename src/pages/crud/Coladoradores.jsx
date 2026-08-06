@@ -2,7 +2,7 @@ import "../cadastros.css";
 import { useEffect, useState } from "react";
 import { FaSave, FaBan } from "react-icons/fa";
 
-export default function Colaboradores() {
+export default function Colaboradores({ onVoltar }) {
   const [idUser, setIdUser] = useState("");
   const [idLogin, setIdLogin] = useState("");
   const [idSenha, setIdSenha] = useState("");
@@ -152,8 +152,16 @@ export default function Colaboradores() {
 
   return (
     <div className="cadastros-page">
-      <div className="cadastros-topo">
+      <div className="cadastros-topo" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <h1>Cadastro de Colaboradores</h1>
+        <button
+          type="button"
+          className="botao-acao"
+          style={{ minWidth: "120px", width: "auto", height: "42px", fontSize: "14px" }}
+          onClick={onVoltar}
+        >
+          VOLTAR
+        </button>
       </div>
 
       <div className="cadastros-conteudo">

@@ -28,7 +28,7 @@ const ANAMNESE_INICIAL = {
   tontura: "N",
 };
 
-export default function Clientes() {
+export default function Clientes({ onVoltar }) {
   const [cpf, setCpf] = useState("");
   const [abaAtiva, setAbaAtiva] = useState("dados");
   const [anamnese, setAnamnese] = useState({ ...ANAMNESE_INICIAL });
@@ -803,8 +803,16 @@ export default function Clientes() {
 
 
     <div className="cadastros-page">
-      <div className="cadastros-topo">
+      <div className="cadastros-topo" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <h1>Cadastro de Clientes</h1>
+        <button
+          type="button"
+          className="botao-acao"
+          style={{ minWidth: "120px", width: "auto", height: "42px", fontSize: "14px" }}
+          onClick={onVoltar}
+        >
+          VOLTAR
+        </button>
       </div>
 
       <div className="cadastros-conteudo">

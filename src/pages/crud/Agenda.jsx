@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "../Cadastros.css";
 
-export default function Agenda({ onEditAgendamento }) {
+export default function Agenda({ onEditAgendamento, onVoltar }) {
   const hoje = new Date().toISOString().split("T")[0];
 
   const [dataFiltro, setDataFiltro] = useState(hoje);
@@ -73,8 +73,16 @@ export default function Agenda({ onEditAgendamento }) {
 
   return (
     <div className="cadastros-page">
-      <div className="cadastros-topo">
+      <div className="cadastros-topo" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <h1>Agenda do Dia</h1>
+        <button
+          type="button"
+          className="botao-acao"
+          style={{ minWidth: "120px", width: "auto", height: "42px", fontSize: "14px" }}
+          onClick={onVoltar}
+        >
+          VOLTAR
+        </button>
       </div>
 
       <div className="cadastros-conteudo">
