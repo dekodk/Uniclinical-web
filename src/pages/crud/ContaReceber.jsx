@@ -108,6 +108,26 @@ export default function ContaReceber({ onVoltar }) {
     setContaSelecionada(CONTA_INICIAL);
   }
 
+  function dataHojeISO() {
+    const hoje = new Date();
+    const ano = hoje.getFullYear();
+    const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+    const dia = String(hoje.getDate()).padStart(2, "0");
+
+    return `${ano}-${mes}-${dia}`;
+  }
+
+  function alterarStatus(status) {
+    setContaSelecionada((prev) => ({
+      ...prev,
+      status,
+      dataPagamento:
+        status === "FECHADO" && !prev.dataPagamento
+          ? dataHojeISO()
+          : prev.dataPagamento,
+    }));
+  }
+
   async function salvarConta() {
     if (!contaSelecionada.idCar) {
       alert("Selecione uma conta a receber para salvar.");
@@ -115,6 +135,10 @@ export default function ContaReceber({ onVoltar }) {
     }
 
     const token = localStorage.getItem("token");
+    const dataPagamento =
+      contaSelecionada.status === "FECHADO"
+        ? contaSelecionada.dataPagamento || dataHojeISO()
+        : contaSelecionada.dataPagamento || null;
 
     setSalvando(true);
     setErro("");
@@ -134,7 +158,7 @@ export default function ContaReceber({ onVoltar }) {
           juros: contaSelecionada.juros || null,
           valorFinal: contaSelecionada.valorFinal || null,
           dataPrevista: contaSelecionada.dataPrevista || null,
-          dataPagamento: contaSelecionada.dataPagamento || null,
+          dataPagamento,
           formaPagamento: contaSelecionada.formaPagamento || null,
           status: contaSelecionada.status || null,
           observacao: contaSelecionada.observacao || null,
@@ -242,12 +266,7 @@ export default function ContaReceber({ onVoltar }) {
               <label>Status</label>
               <select
                 value={contaSelecionada.status}
-                onChange={(e) =>
-                  setContaSelecionada((prev) => ({
-                    ...prev,
-                    status: e.target.value,
-                  }))
-                }
+                onChange={(e) => alterarStatus(e.target.value)}
               >
                 <option value="">Selecione</option>
                 <option value="ABERTO">ABERTO</option>
@@ -264,7 +283,16 @@ export default function ContaReceber({ onVoltar }) {
 
             <div className="form-grupo valor">
               <label>Data pagamento</label>
-              <input type="text" value={formatarData(contaSelecionada.dataPagamento)} readOnly />
+              <input
+                type="date"
+                value={contaSelecionada.dataPagamento}
+                onChange={(e) =>
+                  setContaSelecionada((prev) => ({
+                    ...prev,
+                    dataPagamento: e.target.value,
+                  }))
+                }
+              />
             </div>
 
             <div className="form-grupo valor">

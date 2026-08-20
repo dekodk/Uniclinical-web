@@ -13,6 +13,9 @@ import Rel1Colaboradores from "./relatorios/rel1colaboradores";
 import Rel1Insumos from "./relatorios/rel1insumos";
 import Rel1Procedimentos from "./relatorios/rel1procedimentos";
 import Rel1Aniversariantes from "./relatorios/rel1aniversariantes";
+import Rel1ContasReceber from "./relatorios/rel1contasreceber";
+import Rel1ContasPagar from "./relatorios/rel1contaspagar";
+import Rel1Caixa from "./relatorios/rel1caixa";
 
 export default function MenuPrincipal({ onLogout, usuarioLogado }) {
   const [telaAtiva, setTelaAtiva] = useState("home");
@@ -142,6 +145,18 @@ export default function MenuPrincipal({ onLogout, usuarioLogado }) {
 
     if (telaAtiva === "relatorio-aniversariantes") {
       return <Rel1Aniversariantes onVoltar={() => setTelaAtiva("home")} />;
+    }
+
+    if (telaAtiva === "relatorio-contas-receber") {
+      return <Rel1ContasReceber onVoltar={() => setTelaAtiva("home")} />;
+    }
+
+    if (telaAtiva === "relatorio-contas-pagar") {
+      return <Rel1ContasPagar onVoltar={() => setTelaAtiva("home")} />;
+    }
+
+    if (telaAtiva === "relatorio-caixa") {
+      return <Rel1Caixa onVoltar={() => setTelaAtiva("home")} />;
     }
 
     return (

@@ -227,6 +227,24 @@ export default function Sidebar({ setTelaAtiva, onLogout, usuarioLogado }) {
             >
               Lista de Aniversariantes
             </button>
+            <button
+              className="submenu-item"
+              onClick={() => setTelaAtiva("relatorio-contas-receber")}
+            >
+              Contas a Receber
+            </button>
+            <button
+              className="submenu-item"
+              onClick={() => setTelaAtiva("relatorio-contas-pagar")}
+            >
+              Contas a Pagar
+            </button>
+            <button
+              className="submenu-item"
+              onClick={() => setTelaAtiva("relatorio-caixa")}
+            >
+              Caixa
+            </button>
           </div>
         )}
 
